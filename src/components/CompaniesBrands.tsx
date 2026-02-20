@@ -4,12 +4,12 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { HomeIcon } from "@heroicons/react/24/solid";
 import PageBanner from "@/components/PageBanner";
-import c1 from "@/assets/company/com1.png";
-import c2 from "@/assets/company/com2.png";
-import c3 from "@/assets/company/com3.png";
-import c4 from "@/assets/company/com4.png";
-import c5 from "@/assets/company/com5.png";
-import c6 from "@/assets/company/com7.png";
+import c1 from "@/assets/company/company1.png";
+import c2 from "@/assets/company/company2.png";
+import c3 from "@/assets/company/company3.png";
+import c4 from "@/assets/company/company4.png";
+import c5 from "@/assets/company/company5.png";
+import c6 from "@/assets/company/company7.png";
 
 import b1 from "@/assets/brands/b1.png";
 import b2 from "@/assets/brands/b2.png";
