@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import React from "react";
+import React from 'react'
 import {
   HomeIcon,
   LightBulbIcon,
@@ -10,11 +10,11 @@ import {
   ArrowUpRightIcon,
   TrophyIcon,
   SparklesIcon,
-} from "@heroicons/react/24/solid";
-import logo2 from "@/assets/logo/logo2.png";
-import Image from "next/image";
-import Link from "next/link";
-import PageBanner from "./PageBanner";
+} from '@heroicons/react/24/solid'
+import logo2 from '@/assets/logo/logo2.png'
+import Image from 'next/image'
+import Link from 'next/link'
+import PageBanner from './PageBanner'
 
 export default function ArkshismSection() {
   return (
@@ -25,10 +25,7 @@ export default function ArkshismSection() {
         padding="py-12 px-6"
         width="w-425 mx-auto"
         textAlign="center"
-        breadcrumb={[
-          { name: "Home", href: "/", icon: <HomeIcon /> },
-          { name: "Arkshism" },
-        ]}
+        breadcrumb={[{ name: 'Home', href: '/', icon: <HomeIcon /> }, { name: 'Arkshism' }]}
       />
       <div className="max-w-7xl mx-auto px-6 pt-16">
         {/* 2. Philosophy Hero Card */}
@@ -40,9 +37,8 @@ export default function ArkshismSection() {
             <h2 className="text-4xl font-bold">Arkshism</h2>
             <div className="w-16 h-1 bg-white/50 rounded-full my-2"></div>
             <p className="max-w-3xl text-lg leading-relaxed font-medium">
-              The guiding philosophy behind this identity and visual
-              representation of logo is known as Arkshism, a concept rooted in
-              aspiration and stellar excellence.
+              The guiding philosophy behind this identity and visual representation of logo is known
+              as Arkshism, a concept rooted in aspiration and stellar excellence.
             </p>
           </div>
         </div>
@@ -81,8 +77,8 @@ export default function ArkshismSection() {
             className="text-center text-gray-600 text-[18px] mb-12 max-w-2xl mx-auto border border-gray-100 py-6 px-10 rounded-2xl shadow-blue-300 border-t-blue-500 
               transition-shadow duration-300 hover:-translate-y-2 hover:shadow-lg"
           >
-            The logo comprises stars, a person, and lines, with each element and
-            color conveying a specific meaning.
+            The logo comprises stars, a person, and lines, with each element and color conveying a
+            specific meaning.
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -129,9 +125,8 @@ export default function ArkshismSection() {
             className="text-center text-gray-600 text-[18px] mb-12 max-w-2xl mx-auto border border-gray-100 py-6 px-10 rounded-2xl shadow-blue-300 border-t-blue-500 
               transition-shadow duration-300 hover:-translate-y-2 hover:shadow-lg"
           >
-            लोगोमा ताराहरू, एक व्यक्ति र रेखाहरू समावेश भएका छन्, जसका प्रत्येक
-            तत्व र रङले विशेष अर्थको अनुरूप बुझाउँछ, जसलाई पूर्ण रूपमा तल
-            व्याख्या गरिएको छ।
+            लोगोमा ताराहरू, एक व्यक्ति र रेखाहरू समावेश भएका छन्, जसका प्रत्येक तत्व र रङले विशेष
+            अर्थको अनुरूप बुझाउँछ, जसलाई पूर्ण रूपमा तल व्याख्या गरिएको छ।
           </p>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -164,19 +159,11 @@ export default function ArkshismSection() {
         </section>
       </div>
     </main>
-  );
+  )
 }
 
 // Reusable Components
-function PillarCard({
-  icon,
-  title,
-  desc,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  desc: string;
-}) {
+function PillarCard({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) {
   return (
     <div className="bg-white p-10 rounded-[40px] border border-gray-50 flex flex-col items-center text-center shadow-[0_10px_40px_rgba(0,0,0,0.06)] group hover:shadow-2xl transition-all duration-500">
       <div className="bg-[#3498db] p-5 rounded-full text-white mb-8 group-hover:scale-110 transition-transform">
@@ -186,7 +173,7 @@ function PillarCard({
       <div className="w-14 h-1 bg-[#3498db] mb-6"></div>
       <p className="text-gray-500 leading-relaxed text-[15px]">{desc}</p>
     </div>
-  );
+  )
 }
 
 function SectionHeader({ title }: { title: string }) {
@@ -195,25 +182,17 @@ function SectionHeader({ title }: { title: string }) {
       <h2 className="text-5xl font-bold text-[#3498db] mb-4">{title}</h2>
       <div className="w-24 h-1 bg-[#3498db] mx-auto"></div>
     </div>
-  );
+  )
 }
 
-function LogoDetailCard({
-  icon,
-  title,
-  desc,
-}: {
-  icon: any;
-  title: string;
-  desc: string;
-}) {
+function LogoDetailCard({ icon, title, desc }: { icon: any; title: string; desc: string }) {
   return (
     <div className="bg-blue-50 p-8 rounded-3xl border border-blue-100 flex flex-col gap-4 text-left group hover:bg-blue-100 hover:shadow-xl transition-all duration-300">
       <div className="bg-[#3498db] p-3 rounded-full text-white w-12 h-12 flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
-        {React.cloneElement(icon, { className: "w-6 h-6" })}
+        {React.cloneElement(icon, { className: 'w-6 h-6' })}
       </div>
       <h4 className="text-2xl font-bold text-[#3498db]">{title}</h4>
       <p className="text-[#5d6d7e] leading-relaxed text-[15px]">{desc}</p>
     </div>
-  );
+  )
 }

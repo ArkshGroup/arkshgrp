@@ -19,6 +19,10 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@heroicons/react": "^2.2.0",
+    "@mui/material": "^7.3.8",
     "@payloadcms/db-mongodb": "3.42.0",
     "@payloadcms/next": "3.42.0",
     "@payloadcms/payload-cloud": "3.42.0",
@@ -26,6 +30,8 @@
     "@payloadcms/ui": "3.42.0",
     "axios": "^1.10.0",
     "cross-env": "^7.0.3",
+    "formik": "^2.4.9",
+    "framer-motion": "^12.34.3",
     "graphql": "^16.8.1",
     "lucide-react": "^0.574.0",
     "next": "^15.5.9",
@@ -36,14 +42,9 @@
     "react-icon": "^1.0.0",
     "react-icons": "^5.5.0",
     "sharp": "0.32.6",
-    "zod": "^3.23.8",
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
-    "@heroicons/react": "^2.2.0",
-    "@mui/material": "^7.3.8",
-    "formik": "^2.4.9",
+    "yet-another-react-lightbox": "^3.29.1",
     "yup": "^1.7.1",
-    "yet-another-react-lightbox": "^3.29.1"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

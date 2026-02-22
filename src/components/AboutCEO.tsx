@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import React, { useState, useEffect } from "react";
-import Image from "next/image";
+import React, { useState, useEffect } from 'react'
+import Image from 'next/image'
 import {
   HomeIcon,
   ChevronLeftIcon,
@@ -12,128 +12,126 @@ import {
   MagnifyingGlassPlusIcon,
   MagnifyingGlassMinusIcon,
   ArrowsPointingOutIcon,
-} from "@heroicons/react/24/solid";
-import PageBanner from "@/components/PageBanner";
-import Link from "next/link";
-import { gallery, interviews } from "@/constant/ceo.data";
+} from '@heroicons/react/24/solid'
+import PageBanner from '@/components/PageBanner'
+import Link from 'next/link'
+import { gallery, interviews } from '@/constant/ceo.data'
 
 export default function AboutCEO() {
   // --- INTERVIEW SLIDESHOW LOGIC ---
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isPaused, setIsPaused] = useState(false)
+  const [isTransitioning, setIsTransitioning] = useState(false)
 
   // --- GALLERY SLIDESHOW LOGIC ---
-  const [galleryIndex, setGalleryIndex] = useState(0);
-  const [isGalleryPaused, setIsGalleryPaused] = useState(false);
-  const [isGalleryTransitioning, setIsGalleryTransitioning] = useState(false);
+  const [galleryIndex, setGalleryIndex] = useState(0)
+  const [isGalleryPaused, setIsGalleryPaused] = useState(false)
+  const [isGalleryTransitioning, setIsGalleryTransitioning] = useState(false)
 
   // --- LIGHTBOX STATE ---
-  const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null);
-  const [zoomLevel, setZoomLevel] = useState(1);
-  const [isLightboxPlaying, setIsLightboxPlaying] = useState(false);
+  const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null)
+  const [zoomLevel, setZoomLevel] = useState(1)
+  const [isLightboxPlaying, setIsLightboxPlaying] = useState(false)
 
   // Interview Auto-slide
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused) return
     const interval = setInterval(() => {
-      handleNext();
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [currentIndex, isPaused]);
+      handleNext()
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [currentIndex, isPaused])
 
   // Gallery Auto-slide
   useEffect(() => {
-    if (isGalleryPaused || selectedImageIdx !== null) return;
+    if (isGalleryPaused || selectedImageIdx !== null) return
     const interval = setInterval(() => {
-      handleGalleryNext();
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [galleryIndex, isGalleryPaused, selectedImageIdx]);
+      handleGalleryNext()
+    }, 3000)
+    return () => clearInterval(interval)
+  }, [galleryIndex, isGalleryPaused, selectedImageIdx])
 
   // Lightbox Slideshow Auto-play
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: NodeJS.Timeout
     if (isLightboxPlaying && selectedImageIdx !== null) {
       interval = setInterval(() => {
-        setZoomLevel(1); // Reset zoom on next slide
-        setSelectedImageIdx((prev) => (prev! + 1) % gallery.length);
-      }, 3000);
+        setZoomLevel(1) // Reset zoom on next slide
+        setSelectedImageIdx((prev) => (prev! + 1) % gallery.length)
+      }, 3000)
     }
-    return () => clearInterval(interval);
-  }, [isLightboxPlaying, selectedImageIdx, gallery.length]);
+    return () => clearInterval(interval)
+  }, [isLightboxPlaying, selectedImageIdx, gallery.length])
 
   const handleNext = () => {
-    setIsTransitioning(true);
+    setIsTransitioning(true)
     setTimeout(() => {
-      setCurrentIndex((prev) => (prev + 1) % interviews.length);
-      setIsTransitioning(false);
-    }, 400);
-  };
+      setCurrentIndex((prev) => (prev + 1) % interviews.length)
+      setIsTransitioning(false)
+    }, 400)
+  }
 
   const handlePrev = () => {
-    setIsTransitioning(true);
+    setIsTransitioning(true)
     setTimeout(() => {
-      setCurrentIndex(
-        (prev) => (prev - 1 + interviews.length) % interviews.length,
-      );
-      setIsTransitioning(false);
-    }, 400);
-  };
+      setCurrentIndex((prev) => (prev - 1 + interviews.length) % interviews.length)
+      setIsTransitioning(false)
+    }, 400)
+  }
 
   const handleGalleryNext = () => {
-    setIsGalleryTransitioning(true);
+    setIsGalleryTransitioning(true)
     setTimeout(() => {
-      setGalleryIndex((prev) => (prev + 1) % gallery.length);
-      setIsGalleryTransitioning(false);
-    }, 400);
-  };
+      setGalleryIndex((prev) => (prev + 1) % gallery.length)
+      setIsGalleryTransitioning(false)
+    }, 400)
+  }
 
   const handleGalleryPrev = () => {
-    setIsGalleryTransitioning(true);
+    setIsGalleryTransitioning(true)
     setTimeout(() => {
-      setGalleryIndex((prev) => (prev - 1 + gallery.length) % gallery.length);
-      setIsGalleryTransitioning(false);
-    }, 400);
-  };
+      setGalleryIndex((prev) => (prev - 1 + gallery.length) % gallery.length)
+      setIsGalleryTransitioning(false)
+    }, 400)
+  }
 
   const toggleFullScreen = () => {
     if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
+      document.documentElement.requestFullscreen()
     } else if (document.exitFullscreen) {
-      document.exitFullscreen();
+      document.exitFullscreen()
     }
-  };
+  }
 
   const closeLightbox = () => {
-    setSelectedImageIdx(null);
-    setZoomLevel(1);
-    setIsLightboxPlaying(false);
-  };
+    setSelectedImageIdx(null)
+    setZoomLevel(1)
+    setIsLightboxPlaying(false)
+  }
 
   const getVisibleInterviews = () => {
-    const items = [];
+    const items = []
     for (let i = 0; i < 3; i++) {
-      items.push(interviews[(currentIndex + i) % interviews.length]);
+      items.push(interviews[(currentIndex + i) % interviews.length])
     }
-    return items;
-  };
+    return items
+  }
 
   const getVisibleGallery = () => {
-    const items = [];
+    const items = []
     for (let i = 0; i < 3; i++) {
-      items.push(gallery[(galleryIndex + i) % gallery.length]);
+      items.push(gallery[(galleryIndex + i) % gallery.length])
     }
-    return items;
-  };
+    return items
+  }
 
   return (
     <main className="bg-[#F8FAFC] min-h-screen pb-20 font-sans">
       <PageBanner
         title="Message from CEO"
         breadcrumb={[
-          { name: "Home", href: "/", icon: <HomeIcon className="w-4 h-4" /> },
-          { name: "Ceo Message" },
+          { name: 'Home', href: '/', icon: <HomeIcon className="w-4 h-4" /> },
+          { name: 'Ceo Message' },
         ]}
       />
 
@@ -151,9 +149,7 @@ export default function AboutCEO() {
               />
               <div className="absolute bottom-10 left-6 right-6 transition-all duration-500 ease-out group-hover:-translate-y-2">
                 <div className="bg-[#2257A6] p-6 rounded-2xl shadow-xl inline-block min-w-60">
-                  <h2 className="text-white text-3xl font-bold tracking-tight">
-                    Rajul Shrestha
-                  </h2>
+                  <h2 className="text-white text-3xl font-bold tracking-tight">Rajul Shrestha</h2>
                   <div className="h-0.5 w-12 bg-white/30 my-2 transition-all duration-500 group-hover:w-20"></div>
                   <p className="text-blue-100 text-sm font-medium uppercase tracking-wider">
                     Chief Executive Officer
@@ -179,34 +175,29 @@ export default function AboutCEO() {
               </div>
               <div className="space-y-6 text-gray-600 leading-[1.8] text-[17px]">
                 <p>
-                  I am in no misconception about what an enormous privilege it
-                  is to be sharing a few words on this page as the CEO of Arksh
-                  Group. Life for me, so far, has been a journey filled with
-                  unexpected interactions and results.
-                </p>{" "}
+                  I am in no misconception about what an enormous privilege it is to be sharing a
+                  few words on this page as the CEO of Arksh Group. Life for me, so far, has been a
+                  journey filled with unexpected interactions and results.
+                </p>{' '}
                 <p>
-                  These experiences have been the determinants of my
-                  characteristics; that is of an individual with a keen interest
-                  in learning and gaining new information and continuously
-                  building my knowledge.
-                </p>{" "}
+                  These experiences have been the determinants of my characteristics; that is of an
+                  individual with a keen interest in learning and gaining new information and
+                  continuously building my knowledge.
+                </p>{' '}
                 <p>
-                  Having spent nearly half my life abroad for studies, I have
-                  had vast exposure of foreign customs, institutions and
-                  systems. Perhaps this is the reason that has led me to
-                  envision a modern future for Arksh Group. I believe it is
-                  important to move with, if not ahead of time. Yet, the core
-                  principals upon which the company was established will always
-                  remain the fundamentals for every avenue we turn.
-                </p>{" "}
+                  Having spent nearly half my life abroad for studies, I have had vast exposure of
+                  foreign customs, institutions and systems. Perhaps this is the reason that has led
+                  me to envision a modern future for Arksh Group. I believe it is important to move
+                  with, if not ahead of time. Yet, the core principals upon which the company was
+                  established will always remain the fundamentals for every avenue we turn.
+                </p>{' '}
                 <p>
-                  Completing my Master's degree with distinction from England,
-                  United Kingdom felt like a huge accomplishment at the time but
-                  now, I face bigger challenges. As I commence my journey as the
-                  CEO of one of the most influential companies of the nation, I
-                  am very well aware of the huge responsibility I carry towards
-                  the company itself, our partners, our customers and also
-                  towards the society we live in.
+                  Completing my Master's degree with distinction from England, United Kingdom felt
+                  like a huge accomplishment at the time but now, I face bigger challenges. As I
+                  commence my journey as the CEO of one of the most influential companies of the
+                  nation, I am very well aware of the huge responsibility I carry towards the
+                  company itself, our partners, our customers and also towards the society we live
+                  in.
                 </p>
               </div>
             </div>
@@ -223,17 +214,15 @@ export default function AboutCEO() {
           </h2>
           <div className="space-y-10">
             <p className="text-gray-600 text-lg leading-relaxed">
-              As I look ahead at the long road that stretches in front of me, I
-              am even more determined to work rigorously hard to fulfill my
-              duties. With the recent revamp of the brand image, I envision to
-              create a better working environment for our staff who play a
-              crucial role in meeting and exceeding the expectations of our
-              customers. This, in turn, will drive the success of the company
-              and along with it our society too.
+              As I look ahead at the long road that stretches in front of me, I am even more
+              determined to work rigorously hard to fulfill my duties. With the recent revamp of the
+              brand image, I envision to create a better working environment for our staff who play
+              a crucial role in meeting and exceeding the expectations of our customers. This, in
+              turn, will drive the success of the company and along with it our society too.
             </p>
             {[
-              "It is my belief that every part of the society we live in must advance with the economy of the nation. We should give back to the society that we live and work in by helping the needed. We must provide equal opportunities to those who are qualified as well as to those who are less able than the rest.",
-              "We must instill upon every single individual that they are proficient, no matter what their capabilities, everyone is capable of achieving their goals. This attitude is critical is driving the society forward and to provide such opportunities will be one amongst the many contribution of Arksh Group to the society.",
+              'It is my belief that every part of the society we live in must advance with the economy of the nation. We should give back to the society that we live and work in by helping the needed. We must provide equal opportunities to those who are qualified as well as to those who are less able than the rest.',
+              'We must instill upon every single individual that they are proficient, no matter what their capabilities, everyone is capable of achieving their goals. This attitude is critical is driving the society forward and to provide such opportunities will be one amongst the many contribution of Arksh Group to the society.',
             ].map((text, idx) => (
               <div key={idx} className="flex gap-5 items-start">
                 <div className="bg-[#2257A6] p-1.5 rounded-full mt-1.5">
@@ -269,8 +258,8 @@ export default function AboutCEO() {
           </h2>
           <div className="w-20 h-1.5 bg-[#2257A6] mx-auto mb-8 rounded-full"></div>
           <p className="max-w-2xl mx-auto text-gray-500 text-lg mb-16">
-            Gain insights and perspectives from our leadership through these
-            selected media appearances.
+            Gain insights and perspectives from our leadership through these selected media
+            appearances.
           </p>
 
           <div
@@ -288,16 +277,12 @@ export default function AboutCEO() {
             <div
               className={`grid grid-cols-1 md:grid-cols-3 gap-8 transition-all duration-700 ease-in-out ${
                 isTransitioning
-                  ? "opacity-40 scale-[0.98] blur-[2px]"
-                  : "opacity-100 scale-100 blur-0"
+                  ? 'opacity-40 scale-[0.98] blur-[2px]'
+                  : 'opacity-100 scale-100 blur-0'
               }`}
             >
               {getVisibleInterviews().map((item, index) => (
-                <Link
-                  href={item.url}
-                  target="_blank"
-                  key={`${item.id}-${index}`}
-                >
+                <Link href={item.url} target="_blank" key={`${item.id}-${index}`}>
                   <div className="relative aspect-video rounded-3xl overflow-hidden shadow-xl group cursor-pointer transition-transform duration-500 hover:shadow-2xl">
                     <Image
                       src={item.image}
@@ -328,16 +313,14 @@ export default function AboutCEO() {
               <button
                 key={idx}
                 onClick={() => {
-                  setIsTransitioning(true);
+                  setIsTransitioning(true)
                   setTimeout(() => {
-                    setCurrentIndex(idx);
-                    setIsTransitioning(false);
-                  }, 300);
+                    setCurrentIndex(idx)
+                    setIsTransitioning(false)
+                  }, 300)
                 }}
                 className={`h-2.5 rounded-full transition-all duration-500 ${
-                  currentIndex === idx
-                    ? "w-10 bg-[#2257A6]"
-                    : "w-2.5 bg-gray-200 hover:bg-gray-300"
+                  currentIndex === idx ? 'w-10 bg-[#2257A6]' : 'w-2.5 bg-gray-200 hover:bg-gray-300'
                 }`}
               />
             ))}
@@ -371,12 +354,12 @@ export default function AboutCEO() {
             <div
               className={`grid grid-cols-1 md:grid-cols-3 gap-10 transition-all duration-700 ease-in-out ${
                 isGalleryTransitioning
-                  ? "opacity-40 scale-[0.98] blur-[2px]"
-                  : "opacity-100 scale-100 blur-0"
+                  ? 'opacity-40 scale-[0.98] blur-[2px]'
+                  : 'opacity-100 scale-100 blur-0'
               }`}
             >
               {getVisibleGallery().map((item, index) => {
-                const actualIdx = gallery.findIndex((g) => g.id === item.id);
+                const actualIdx = gallery.findIndex((g) => g.id === item.id)
                 return (
                   <div
                     key={`${item.id}-${index}`}
@@ -397,7 +380,7 @@ export default function AboutCEO() {
                       </div>
                     </div>
                   </div>
-                );
+                )
               })}
             </div>
 
@@ -414,16 +397,14 @@ export default function AboutCEO() {
               <button
                 key={idx}
                 onClick={() => {
-                  setIsGalleryTransitioning(true);
+                  setIsGalleryTransitioning(true)
                   setTimeout(() => {
-                    setGalleryIndex(idx);
-                    setIsGalleryTransitioning(false);
-                  }, 300);
+                    setGalleryIndex(idx)
+                    setIsGalleryTransitioning(false)
+                  }, 300)
                 }}
                 className={`h-2.5 rounded-full transition-all duration-500 ${
-                  galleryIndex === idx
-                    ? "w-10 bg-[#2257A6]"
-                    : "w-2.5 bg-gray-200 hover:bg-gray-300"
+                  galleryIndex === idx ? 'w-10 bg-[#2257A6]' : 'w-2.5 bg-gray-200 hover:bg-gray-300'
                 }`}
               />
             ))}
@@ -442,8 +423,8 @@ export default function AboutCEO() {
             <div className="flex gap-4 items-center">
               <button
                 onClick={(e) => {
-                  e.stopPropagation();
-                  setIsLightboxPlaying(!isLightboxPlaying);
+                  e.stopPropagation()
+                  setIsLightboxPlaying(!isLightboxPlaying)
                 }}
                 className="text-white hover:text-blue-400 p-2 bg-white/10 rounded-full transition-colors"
               >
@@ -455,8 +436,8 @@ export default function AboutCEO() {
               </button>
               <button
                 onClick={(e) => {
-                  e.stopPropagation();
-                  setZoomLevel((prev) => Math.min(prev + 0.5, 3));
+                  e.stopPropagation()
+                  setZoomLevel((prev) => Math.min(prev + 0.5, 3))
                 }}
                 className="text-white hover:text-blue-400 p-2 bg-white/10 rounded-full transition-colors"
               >
@@ -464,8 +445,8 @@ export default function AboutCEO() {
               </button>
               <button
                 onClick={(e) => {
-                  e.stopPropagation();
-                  setZoomLevel((prev) => Math.max(prev - 0.5, 1));
+                  e.stopPropagation()
+                  setZoomLevel((prev) => Math.max(prev - 0.5, 1))
                 }}
                 className="text-white hover:text-blue-400 p-2 bg-white/10 rounded-full transition-colors"
               >
@@ -473,8 +454,8 @@ export default function AboutCEO() {
               </button>
               <button
                 onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFullScreen();
+                  e.stopPropagation()
+                  toggleFullScreen()
                 }}
                 className="text-white hover:text-blue-400 p-2 bg-white/10 rounded-full transition-colors"
               >
@@ -493,11 +474,9 @@ export default function AboutCEO() {
           {/* LIGHTBOX NAVIGATION */}
           <button
             onClick={(e) => {
-              e.stopPropagation();
-              setZoomLevel(1);
-              setSelectedImageIdx(
-                (prev) => (prev! - 1 + gallery.length) % gallery.length,
-              );
+              e.stopPropagation()
+              setZoomLevel(1)
+              setSelectedImageIdx((prev) => (prev! - 1 + gallery.length) % gallery.length)
             }}
             className="absolute left-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white z-110 transition-colors"
           >
@@ -506,9 +485,9 @@ export default function AboutCEO() {
 
           <button
             onClick={(e) => {
-              e.stopPropagation();
-              setZoomLevel(1);
-              setSelectedImageIdx((prev) => (prev! + 1) % gallery.length);
+              e.stopPropagation()
+              setZoomLevel(1)
+              setSelectedImageIdx((prev) => (prev! + 1) % gallery.length)
             }}
             className="absolute right-6 top-1/2 -translate-y-1/2 text-white/50 hover:text-white z-110 transition-colors"
           >
@@ -538,5 +517,5 @@ export default function AboutCEO() {
         </div>
       )}
     </main>
-  );
+  )
 }
