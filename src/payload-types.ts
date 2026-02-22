@@ -259,6 +259,7 @@ export interface Blog {
   date: string;
   image: string | Media;
   author: string;
+  published?: boolean | null;
   tags?:
     | {
         tag: string;
@@ -528,6 +529,7 @@ export interface BlogsSelect<T extends boolean = true> {
   date?: T;
   image?: T;
   author?: T;
+  published?: T;
   tags?:
     | T
     | {

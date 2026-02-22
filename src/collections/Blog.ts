@@ -57,10 +57,18 @@ const Blog: CollectionConfig = {
     {
       name: 'author',
       type: 'text',
-
       required: true,
       label: 'Author',
     },
+    {
+     name: 'published',
+      type: 'checkbox',
+      label: 'Published',
+      defaultValue: false,
+    },
+  
+  
+
     {
       name: 'tags',
       type: 'array', // array of strings

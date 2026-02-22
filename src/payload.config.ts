@@ -26,9 +26,9 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
     meta: {
-      titleSuffix: ' - Hotel Peaceeland Admin',
+      titleSuffix: ' - Arksh Group',
       description:
-        'Hotel Peaceeland is a hotel in Nepal, dedicated to providing a comfortable and welcoming experience for guests.',
+        'Arksh Group',
       icons: [
         {
           rel: 'icon',
@@ -43,7 +43,7 @@ export default buildConfig({
       graphics: {
         Logo: '../src/components/LoginLogo.tsx',
       },
-      header: ['../src/components/Header.tsx'],
+      header: ['../src/components/AdminHeader.tsx'],
     },
   },
   cors: [ 'https://hotelpeaceland.com', 'https://www.hotelpeaceland.com'],
