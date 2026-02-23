@@ -1,58 +1,35 @@
+// payload/collections/Gallery.ts
 import { CollectionConfig } from 'payload'
 
-const Gallery: CollectionConfig = {
+export const Gallery: CollectionConfig = {
   slug: 'photos',
   admin: {
-    useAsTitle: 'id',
-    group: 'MEDIA',
+    useAsTitle: 'title',
   },
   access: {
     read: () => true,
-
-    update: ({ req }) => {
-      return (
-        req.user?.role === 'admin'  || req.user?.role === 'editor'
-      )
-    },
-
-    create: ({ req }) => {
-      return (
-        req.user?.role === 'admin'  || req.user?.role === 'editor'
-      )
-    },
-
-    delete: ({ req }) => {
-      return (
-        req.user?.role === 'admin' 
-      )
-    },
   },
-
   fields: [
     {
-      name: 'photo',
-      type: 'upload',
-      relationTo: 'media',
-      required: false,
-      label: 'Gallery Image',
+      name: 'title',
+      type: 'text',
+      required: true,
     },
     {
       name: 'category',
-      type: 'relationship',
-      relationTo: 'categories',
+      type: 'select',
+      options: ['Events', 'Automobiles', 'Corporate', 'Wellness', 'Award Ceremony'],
       required: true,
-      label: 'Category',
-      admin: {
-        description: 'Select or create a new category',
-      },
     },
     {
-      name: 'drive_link',
+      name: 'year',
       type: 'text',
-      required: false,
-      label: 'Drive Link',
+    },
+    {
+      name: 'image',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
     },
   ],
 }
-
-export default Gallery

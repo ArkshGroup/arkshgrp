@@ -5,22 +5,21 @@ export const Media: CollectionConfig = {
 
   access: {
     read: () => true,
+
+    // ✅ allow logged-in users only
     create: ({ req }) => {
-      return (
-        req.user?.role === 'admin'  || req.user?.role === 'editor'
-      )
+      return Boolean(req.user)
     },
+
     update: ({ req }) => {
-      return (
-        req.user?.role === 'admin'  || req.user?.role === 'editor'
-      )
+      return Boolean(req.user)
     },
+
     delete: ({ req }) => {
-      return (
-        req.user?.role === 'admin' 
-      )
+      return req.user?.role === 'admin'
     },
   },
+
   fields: [
     {
       name: 'alt',
@@ -28,7 +27,11 @@ export const Media: CollectionConfig = {
       required: false,
     },
   ],
-  upload: true,
+
+  upload: {
+    staticDir: 'media',
+  },
+
   admin: {
     useAsTitle: 'alt',
     group: 'MEDIA',

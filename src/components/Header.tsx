@@ -1,61 +1,59 @@
-"use client";
+'use client'
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { useState, useEffect } from 'react'
+import Link from 'next/link'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
 import {
   EnvelopeIcon,
   PhoneIcon,
   ChevronRightIcon,
   ChevronDownIcon,
   ChevronUpIcon,
-} from "@heroicons/react/24/solid";
-import logo from "@/assets/logo/logo.jpg";
-import { involvements } from "@/constant/involvements.header";
-import { menuItems, socialLinks } from "@/constant/header.data";
-import type { IconType } from "react-icons";
+} from '@heroicons/react/24/solid'
+import logo from '@/assets/logo/logo.jpg'
+import { involvements } from '@/constant/involvements.header'
+import { menuItems, socialLinks } from '@/constant/header.data'
+import type { IconType } from 'react-icons'
 
 interface UnifiedDropdownItem {
-  name: string;
-  href?: string;
-  subBrands?: { name: string; href: string }[];
-  nestedItems?: { name: string; href: string }[];
+  name: string
+  href?: string
+  subBrands?: { name: string; href: string }[]
+  nestedItems?: { name: string; href: string }[]
 }
 
 export default function Header() {
-  const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
-  const [activeNestedMenu, setActiveNestedMenu] = useState<string | null>(null);
-  const [mobileExpandedItem, setMobileExpandedItem] = useState<string | null>(
-    null,
-  );
-  const [scrollDir, setScrollDir] = useState<"up" | "down">("up");
-  const [lastScroll, setLastScroll] = useState(0);
+  const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(false)
+  const [activeNestedMenu, setActiveNestedMenu] = useState<string | null>(null)
+  const [mobileExpandedItem, setMobileExpandedItem] = useState<string | null>(null)
+  const [scrollDir, setScrollDir] = useState<'up' | 'down'>('up')
+  const [lastScroll, setLastScroll] = useState(0)
 
   useEffect(() => {
     const handleScroll = () => {
-      const currentScroll = window.scrollY;
+      const currentScroll = window.scrollY
       if (currentScroll > lastScroll && currentScroll > 50) {
-        setScrollDir("down");
+        setScrollDir('down')
       } else if (currentScroll < lastScroll) {
-        setScrollDir("up");
+        setScrollDir('up')
       }
-      setLastScroll(currentScroll);
-    };
+      setLastScroll(currentScroll)
+    }
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [lastScroll]);
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [lastScroll])
 
   const toggleMobileItem = (label: string) => {
-    setMobileExpandedItem(mobileExpandedItem === label ? null : label);
-  };
+    setMobileExpandedItem(mobileExpandedItem === label ? null : label)
+  }
 
   return (
     <header
       className={`w-full bg-white font-sans sticky top-0 z-50 shadow-sm transition-transform duration-500 ${
-        scrollDir === "down" ? "-translate-y-full" : "translate-y-0"
+        scrollDir === 'down' ? '-translate-y-full' : 'translate-y-0'
       }`}
     >
       {/* ================= TOP BAR ================= */}
@@ -79,8 +77,8 @@ export default function Header() {
 
         <div className="flex gap-3">
           {socialLinks.map((social, i) => {
-            const Icon: IconType = social.icon;
-            const hasBrands = social.brands && social.brands.length > 0;
+            const Icon: IconType = social.icon
+            const hasBrands = social.brands && social.brands.length > 0
             return (
               <div key={i} className="relative group/social">
                 <a
@@ -119,35 +117,28 @@ export default function Header() {
                   </div>
                 )}
               </div>
-            );
+            )
           })}
         </div>
       </div>
 
       {/* ================= MAIN NAVBAR ================= */}
-      <nav className="max-w-7xl mx-auto px-6 md:px-12 py-3 flex justify-between items-center">
-        <Link href="/" className="relative h-14 w-14 md:h-16 md:w-16">
-          <Image
-            src={logo}
-            alt="Arksh Group Logo"
-            fill
-            className="object-contain"
-            priority
-          />
+      <nav className="max-w-8xl mx-auto px-6 md:px-12 py-3 flex justify-between items-center">
+        <Link href="/" className="relative h-18 w-18 md:h-20 md:w-20">
+          <Image src={logo} alt="Arksh Group Logo" fill className="object-contain" priority />
         </Link>
 
         {/* Desktop Menu */}
         <div className="hidden lg:flex items-center gap-7">
           {menuItems.map((item) => {
             const isActive =
-              item.href === "/"
-                ? pathname === "/"
-                : item.href !== "#" && pathname.startsWith(item.href);
+              item.href === '/'
+                ? pathname === '/'
+                : item.href !== '#' && pathname.startsWith(item.href)
             const dropdownItems = (
-              item.label === "Involvements" ? involvements : item.subMenu
-            ) as UnifiedDropdownItem[];
-            const hasDropdown =
-              item.isDropdown || (item.subMenu && item.subMenu.length > 0);
+              item.label === 'Involvements' ? involvements : item.subMenu
+            ) as UnifiedDropdownItem[]
+            const hasDropdown = item.isDropdown || (item.subMenu && item.subMenu.length > 0)
 
             return (
               <div
@@ -158,7 +149,7 @@ export default function Header() {
                 {hasDropdown ? (
                   <>
                     <button
-                      className={`font-semibold text-[15px] flex items-center gap-1 transition-colors ${isActive ? "text-[#209AEA]" : "text-[#005ABA] hover:text-[#209AEA]"}`}
+                      className={`font-semibold text-[15px] flex items-center gap-1 transition-colors ${isActive ? 'text-[#209AEA]' : 'text-[#005ABA] hover:text-[#209AEA]'}`}
                     >
                       {item.label}
                       <ChevronDownIcon className="w-3 h-3 ml-0.5 opacity-70" />
@@ -166,8 +157,8 @@ export default function Header() {
                     <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                       <ul className="w-72 bg-white border border-gray-100 shadow-xl py-2 rounded-lg">
                         {dropdownItems?.map((sub) => {
-                          const children = sub.subBrands || sub.nestedItems;
-                          const hasChildren = children && children.length > 0;
+                          const children = sub.subBrands || sub.nestedItems
+                          const hasChildren = children && children.length > 0
                           return (
                             <li
                               key={sub.name}
@@ -200,9 +191,7 @@ export default function Header() {
                                         <a
                                           href={nested.href}
                                           target={
-                                            nested.href.startsWith("http")
-                                              ? "_blank"
-                                              : "_self"
+                                            nested.href.startsWith('http') ? '_blank' : '_self'
                                           }
                                           rel="noopener noreferrer"
                                           className="block w-full"
@@ -215,7 +204,7 @@ export default function Header() {
                                 </div>
                               )}
                             </li>
-                          );
+                          )
                         })}
                       </ul>
                     </div>
@@ -223,31 +212,23 @@ export default function Header() {
                 ) : (
                   <Link
                     href={item.href}
-                    className={`font-semibold text-[15px] transition-colors border-b-2 pb-1 ${isActive ? "text-[#209AEA] border-[#209AEA]" : "text-[#005ABA] border-transparent hover:text-[#209AEA] hover:border-[#209AEA]"}`}
+                    className={`font-semibold text-[15px] transition-colors border-b-2 pb-1 ${isActive ? 'text-[#209AEA] border-[#209AEA]' : 'text-[#005ABA] border-transparent hover:text-[#209AEA] hover:border-[#209AEA]'}`}
                   >
                     {item.label}
                   </Link>
                 )}
               </div>
-            );
+            )
           })}
         </div>
 
-        <button
-          className="lg:hidden p-2 text-[#005ABA]"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          <svg
-            className="w-7 h-7"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+        <button className="lg:hidden p-2 text-[#005ABA]" onClick={() => setIsOpen(!isOpen)}>
+          <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+              d={isOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'}
             />
           </svg>
         </button>
@@ -257,27 +238,21 @@ export default function Header() {
       {isOpen && (
         <div className="lg:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 py-4 z-50 overflow-y-auto max-h-[calc(100vh-80px)]">
           {menuItems.map((item) => {
-            const isActive =
-              item.href !== "#" && pathname.startsWith(item.href);
+            const isActive = item.href !== '#' && pathname.startsWith(item.href)
             const dropdownItems = (
-              item.label === "Involvements" ? involvements : item.subMenu
-            ) as UnifiedDropdownItem[];
-            const hasDropdown = dropdownItems && dropdownItems.length > 0;
-            const isExpanded = mobileExpandedItem === item.label;
+              item.label === 'Involvements' ? involvements : item.subMenu
+            ) as UnifiedDropdownItem[]
+            const hasDropdown = dropdownItems && dropdownItems.length > 0
+            const isExpanded = mobileExpandedItem === item.label
 
             return (
-              <div
-                key={item.label}
-                className="border-b border-gray-50 last:border-none"
-              >
+              <div key={item.label} className="border-b border-gray-50 last:border-none">
                 {hasDropdown ? (
                   <>
                     <button
                       onClick={() => toggleMobileItem(item.label)}
                       className={`w-full flex justify-between items-center px-8 py-4 font-bold transition-all ${
-                        isActive || isExpanded
-                          ? "text-[#209AEA] bg-blue-50"
-                          : "text-[#005ABA]"
+                        isActive || isExpanded ? 'text-[#209AEA] bg-blue-50' : 'text-[#005ABA]'
                       }`}
                     >
                       <span>{item.label}</span>
@@ -291,8 +266,8 @@ export default function Header() {
                     {isExpanded && (
                       <div className="bg-gray-50/50 py-2">
                         {dropdownItems.map((sub) => {
-                          const children = sub.subBrands || sub.nestedItems;
-                          const hasChildren = children && children.length > 0;
+                          const children = sub.subBrands || sub.nestedItems
+                          const hasChildren = children && children.length > 0
 
                           return (
                             <div key={sub.name} className="px-8 mb-2">
@@ -333,7 +308,7 @@ export default function Header() {
                                 )}
                               </div>
                             </div>
-                          );
+                          )
                         })}
                       </div>
                     )}
@@ -343,17 +318,17 @@ export default function Header() {
                     href={item.href}
                     onClick={() => setIsOpen(false)}
                     className={`block px-8 py-4 font-bold transition-all ${
-                      isActive ? "bg-blue-50 text-[#209AEA]" : "text-[#005ABA]"
+                      isActive ? 'bg-blue-50 text-[#209AEA]' : 'text-[#005ABA]'
                     }`}
                   >
                     {item.label}
                   </Link>
                 )}
               </div>
-            );
+            )
           })}
         </div>
       )}
     </header>
-  );
+  )
 }

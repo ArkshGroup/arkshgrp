@@ -11,11 +11,13 @@ import { Media } from './collections/Media'
 import Contact from './collections/Contact'
 import Blog from './collections/Blog'
 import Notice from './collections/Notice'
-import Gallery from './collections/Gallery'
+
 import Category from './collections/Category'
 import Career from './collections/Career'
 import Applications from './collections/Applications'
 import Bookings from './collections/Bookings'
+import { Gallery } from './collections/Gallery'
+
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
@@ -27,8 +29,7 @@ export default buildConfig({
     },
     meta: {
       titleSuffix: ' - Arksh Group',
-      description:
-        'Arksh Group',
+      description: 'Arksh Group',
       icons: [
         {
           rel: 'icon',
@@ -46,12 +47,10 @@ export default buildConfig({
       header: ['../src/components/AdminHeader.tsx'],
     },
   },
-  cors: [ 'https://hotelpeaceland.com', 'https://www.hotelpeaceland.com'],
+  cors: ['https://arkshgroup.com', 'https://www.arkshgroup.com'],
   collections: [
-
     Contact,
     Bookings,
-    Gallery,
     Category,
     Media,
     Notice,
@@ -59,6 +58,7 @@ export default buildConfig({
     Career,
     Applications,
     Users,
+    Gallery,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

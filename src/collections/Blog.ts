@@ -2,49 +2,60 @@ import { CollectionConfig } from 'payload'
 
 const Blog: CollectionConfig = {
   slug: 'blogs',
+
   admin: {
     useAsTitle: 'title',
     group: 'CONTENT',
   },
+
   access: {
     read: () => true,
-
-    update: ({ req }) => {
-      return (
-        req.user?.role === 'admin' || req.user?.role === 'editor'
-      )
-    },
-
-    create: ({ req }) => {
-      return (
-        req.user?.role === 'admin'  || req.user?.role === 'editor'
-      )
-    },
-
-    delete: ({ req }) => {
-      return req.user?.role === 'admin'
-    },
+    update: ({ req }) => req.user?.role === 'admin' || req.user?.role === 'editor',
+    create: ({ req }) => req.user?.role === 'admin' || req.user?.role === 'editor',
+    delete: ({ req }) => req.user?.role === 'admin',
   },
+
   fields: [
     {
       name: 'title',
       type: 'text',
       required: true,
-      label: 'Title',
+    },
+
+    // ✅ FIXED SLUG FIELD
+    {
+      name: 'slug',
+      type: 'text',
+      required: true,
+      unique: true,
+      index: true,
+      hooks: {
+        beforeValidate: [
+          ({ data }) => {
+            if (data?.title) {
+              data.slug = data.title
+                .toLowerCase()
+                .trim()
+                .replace(/[^a-z0-9\s-]/g, '')
+                .replace(/\s+/g, '-')
+                .replace(/-+/g, '-')
+            }
+          },
+        ],
+      },
     },
 
     {
-      name: 'content',
+      name: 'excerpt',
       type: 'richText',
       required: true,
-      label: 'Content',
     },
 
     {
       name: 'date',
       type: 'date',
       required: true,
-      defaultValue: () => new Date().toISOString(),
+      defaultValue: () => new Date(),
     },
 
     {
@@ -52,34 +63,24 @@ const Blog: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       required: true,
-      label: 'Blog Media (Image)',
     },
+
     {
       name: 'author',
       type: 'text',
       required: true,
-      label: 'Author',
     },
-    {
-     name: 'published',
-      type: 'checkbox',
-      label: 'Published',
-      defaultValue: false,
-    },
-  
-  
 
     {
-      name: 'tags',
-      type: 'array', // array of strings
-      label: 'Tags',
+      name: 'category',
+      type: 'array',
       labels: {
-        singular: 'Tag',
-        plural: 'Tags',
+        singular: 'Category',
+        plural: 'Categories',
       },
       fields: [
         {
-          name: 'tag',
+          name: 'category',
           type: 'text',
           required: true,
         },

@@ -69,7 +69,6 @@ export interface Config {
   collections: {
     contacts: Contact;
     bookings: Booking;
-    photos: Photo;
     categories: Category;
     media: Media;
     notice: Notice;
@@ -77,6 +76,7 @@ export interface Config {
     careers: Career;
     applications: Application;
     users: User;
+    photos: Photo;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -85,7 +85,6 @@ export interface Config {
   collectionsSelect: {
     contacts: ContactsSelect<false> | ContactsSelect<true>;
     bookings: BookingsSelect<false> | BookingsSelect<true>;
-    photos: PhotosSelect<false> | PhotosSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     notice: NoticeSelect<false> | NoticeSelect<true>;
@@ -93,6 +92,7 @@ export interface Config {
     careers: CareersSelect<false> | CareersSelect<true>;
     applications: ApplicationsSelect<false> | ApplicationsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    photos: PhotosSelect<false> | PhotosSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -176,16 +176,15 @@ export interface Booking {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "photos".
+ * via the `definition` "categories".
  */
-export interface Photo {
+export interface Category {
   id: string;
-  photo?: (string | null) | Media;
+  name: string;
   /**
-   * Select or create a new category
+   * URL-friendly version of the category name (e.g., "players", "championships", "trainings")
    */
-  category: string | Category;
-  drive_link?: string | null;
+  slug: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -210,20 +209,6 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "categories".
- */
-export interface Category {
-  id: string;
-  name: string;
-  /**
-   * URL-friendly version of the category name (e.g., "players", "championships", "trainings")
-   */
-  slug: string;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "notice".
  */
 export interface Notice {
@@ -241,7 +226,8 @@ export interface Notice {
 export interface Blog {
   id: string;
   title: string;
-  content: {
+  slug: string;
+  excerpt: {
     root: {
       type: string;
       children: {
@@ -259,10 +245,9 @@ export interface Blog {
   date: string;
   image: string | Media;
   author: string;
-  published?: boolean | null;
-  tags?:
+  category?:
     | {
-        tag: string;
+        category: string;
         id?: string | null;
       }[]
     | null;
@@ -345,6 +330,19 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "photos".
+ */
+export interface Photo {
+  id: string;
+  title: string;
+  category: 'Events' | 'Automobiles' | 'Corporate' | 'Wellness' | 'Award Ceremony';
+  year?: string | null;
+  image: string | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -357,10 +355,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'bookings';
         value: string | Booking;
-      } | null)
-    | ({
-        relationTo: 'photos';
-        value: string | Photo;
       } | null)
     | ({
         relationTo: 'categories';
@@ -389,6 +383,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'photos';
+        value: string | Photo;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -471,17 +469,6 @@ export interface BookingsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "photos_select".
- */
-export interface PhotosSelect<T extends boolean = true> {
-  photo?: T;
-  category?: T;
-  drive_link?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
@@ -525,15 +512,15 @@ export interface NoticeSelect<T extends boolean = true> {
  */
 export interface BlogsSelect<T extends boolean = true> {
   title?: T;
-  content?: T;
+  slug?: T;
+  excerpt?: T;
   date?: T;
   image?: T;
   author?: T;
-  published?: T;
-  tags?:
+  category?:
     | T
     | {
-        tag?: T;
+        category?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -584,6 +571,18 @@ export interface UsersSelect<T extends boolean = true> {
   hash?: T;
   loginAttempts?: T;
   lockUntil?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "photos_select".
+ */
+export interface PhotosSelect<T extends boolean = true> {
+  title?: T;
+  category?: T;
+  year?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

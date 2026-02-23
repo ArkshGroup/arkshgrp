@@ -22,6 +22,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body
+        suppressHydrationWarning
         className={`antialiased flex flex-col min-h-screen ${geistSans.variable} ${geistMono.variable}`}
       >
         {children}
