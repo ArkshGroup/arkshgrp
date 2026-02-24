@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useState } from 'react'
 import {
   HomeIcon,
   LightBulbIcon,
@@ -13,7 +13,6 @@ import {
 } from '@heroicons/react/24/solid'
 import logo2 from '@/assets/logo/logo2.png'
 import Image from 'next/image'
-import Link from 'next/link'
 import PageBanner from './PageBanner'
 
 export default function ArkshismSection() {

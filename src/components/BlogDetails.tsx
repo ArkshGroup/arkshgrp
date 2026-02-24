@@ -64,7 +64,14 @@ export default function BlogDetails() {
   }, [params?.slug])
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">Loading...</div>
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-white">
+        <div className="relative w-16 h-16">
+          <div className="absolute inset-0 rounded-full border-4 border-[#2257A6]/20"></div>
+          <div className="absolute inset-0 rounded-full border-4 border-t-[#2257A6] border-r-transparent border-b-transparent border-l-transparent animate-spin"></div>
+        </div>
+      </div>
+    )
   }
 
   if (!post) {

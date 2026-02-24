@@ -17,6 +17,9 @@ import Career from './collections/Career'
 import Applications from './collections/Applications'
 import Bookings from './collections/Bookings'
 import { Gallery } from './collections/Gallery'
+import News from './collections/News'
+import { YoutubeNews } from './collections/YoutubeNews'
+import { GalleryAlbum } from './collections/GalleryAlbum'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -59,6 +62,9 @@ export default buildConfig({
     Applications,
     Users,
     Gallery,
+    News,
+    YoutubeNews,
+    GalleryAlbum,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

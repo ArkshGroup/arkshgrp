@@ -12,6 +12,9 @@ import {
 } from '@heroicons/react/24/solid'
 import PageBanner from './PageBanner'
 
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
+
 interface BlogCategory {
   id: string
   category: string
@@ -34,7 +37,6 @@ export default function BlogSection() {
   const [posts, setPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
 
-  // Pagination State
   const [currentPage, setCurrentPage] = useState(1)
   const postsPerPage = 6
 
@@ -55,7 +57,6 @@ export default function BlogSection() {
     fetchBlogs()
   }, [])
 
-  // Pagination Logic
   const indexOfLastPost = currentPage * postsPerPage
   const indexOfFirstPost = indexOfLastPost - postsPerPage
   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost)
@@ -65,6 +66,24 @@ export default function BlogSection() {
     setCurrentPage(pageNumber)
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
+
+  /* ===================== */
+  /* FULL PAGE LOADER     */
+  /* ===================== */
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-[#E4F0FD]">
+        <Box>
+          <CircularProgress size={70} thickness={4} sx={{ color: '#3498db' }} />
+        </Box>
+      </main>
+    )
+  }
+
+  /* ===================== */
+  /* ORIGINAL PAGE BELOW   */
+  /* ===================== */
 
   return (
     <main className="bg-[#E4F0FD] font-sans min-h-screen pb-20">
@@ -80,9 +99,7 @@ export default function BlogSection() {
       />
 
       <section className="w-full max-w-8xl mx-auto px-3 sm:px-4 md:px-6 py-8 sm:py-9 md:py-10">
-        {loading ? (
-          <p className="text-center text-gray-500 py-20">Loading blogs...</p>
-        ) : posts.length === 0 ? (
+        {posts.length === 0 ? (
           <p className="text-center text-gray-400 py-20">No blog posts found.</p>
         ) : (
           <>
@@ -125,6 +142,7 @@ export default function BlogSection() {
                       <h3 className="text-lg md:text-xl font-bold text-[#2c3e50] mb-4 leading-snug group-hover:text-[#3498db] transition-colors line-clamp-2">
                         {post.title}
                       </h3>
+
                       <p className="text-[#5d6d7e] text-sm md:text-[15px] leading-relaxed mb-8 line-clamp-3">
                         {(() => {
                           if (!post.excerpt) return ''
@@ -137,6 +155,7 @@ export default function BlogSection() {
                           return text
                         })()}
                       </p>
+
                       <div className="mt-auto pt-6 border-t border-gray-50">
                         <Link
                           href={`/blog/${post.slug}`}
@@ -152,7 +171,6 @@ export default function BlogSection() {
               })}
             </div>
 
-            {/* PAGINATION CONTROLS */}
             {totalPages > 1 && (
               <div className="mt-16 flex justify-center items-center gap-2">
                 <button

@@ -59,6 +59,12 @@ const Nav: React.FC = () => {
               </Link>
             </li>
             <li>
+              <Link href="/admin/collections/gallery-album">
+                <span className="nav-icon">📸</span>
+                Gallery Album
+              </Link>
+            </li>
+            <li>
               <Link href="/admin/collections/media">
                 <span className="nav-icon">🖼️</span>
                 Media
@@ -85,6 +91,18 @@ const Nav: React.FC = () => {
                 <Link href="/admin/collections/blogs">
                   <span className="nav-icon">📝</span>
                   Blogs
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/collections/news">
+                  <span className="nav-icon">📝</span>
+                  News
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/collections/youtube-news">
+                  <span className="nav-icon">📝</span>
+                  Youtube-News
                 </Link>
               </li>
             </ul>

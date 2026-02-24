@@ -30,15 +30,26 @@ export default function Header() {
   const [mobileExpandedItem, setMobileExpandedItem] = useState<string | null>(null)
   const [scrollDir, setScrollDir] = useState<'up' | 'down'>('up')
   const [lastScroll, setLastScroll] = useState(0)
+  const [isScrolled, setIsScrolled] = useState(false)
 
   useEffect(() => {
     const handleScroll = () => {
       const currentScroll = window.scrollY
+
+      // Hide / Show on scroll direction
       if (currentScroll > lastScroll && currentScroll > 50) {
         setScrollDir('down')
       } else if (currentScroll < lastScroll) {
         setScrollDir('up')
       }
+
+      // Background change trigger
+      if (currentScroll > 10) {
+        setIsScrolled(true)
+      } else {
+        setIsScrolled(false)
+      }
+
       setLastScroll(currentScroll)
     }
 
@@ -52,7 +63,7 @@ export default function Header() {
 
   return (
     <header
-      className={`w-full bg-white font-sans sticky top-0 z-50 shadow-sm transition-transform duration-500 ${
+      className={`w-full font-sans sticky top-0 z-50 transition-transform duration-500 ${
         scrollDir === 'down' ? '-translate-y-full' : 'translate-y-0'
       }`}
     >
@@ -79,6 +90,7 @@ export default function Header() {
           {socialLinks.map((social, i) => {
             const Icon: IconType = social.icon
             const hasBrands = social.brands && social.brands.length > 0
+
             return (
               <div key={i} className="relative group/social">
                 <a
@@ -89,6 +101,7 @@ export default function Header() {
                 >
                   <Icon className="w-4 h-4" />
                 </a>
+
                 {hasBrands && (
                   <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover/social:opacity-100 group-hover/social:visible transition-all duration-300 z-50">
                     <div className="bg-white rounded-xl shadow-2xl p-4 w-72 border border-gray-100 relative">
@@ -123,7 +136,13 @@ export default function Header() {
       </div>
 
       {/* ================= MAIN NAVBAR ================= */}
-      <nav className="max-w-8xl mx-auto px-6 md:px-12 py-3 flex justify-between items-center">
+      <nav
+        className={`max-w-8xl mx-auto px-6 md:px-12 py-3 flex justify-between items-center transition-all duration-300 ${
+          isScrolled
+            ? 'bg-white/70 backdrop-blur-xl border-b border-white/20 shadow-md'
+            : 'bg-white'
+        }`}
+      >
         <Link href="/" className="relative h-18 w-18 md:h-20 md:w-20">
           <Image src={logo} alt="Arksh Group Logo" fill className="object-contain" priority />
         </Link>
@@ -135,9 +154,11 @@ export default function Header() {
               item.href === '/'
                 ? pathname === '/'
                 : item.href !== '#' && pathname.startsWith(item.href)
+
             const dropdownItems = (
               item.label === 'Involvements' ? involvements : item.subMenu
             ) as UnifiedDropdownItem[]
+
             const hasDropdown = item.isDropdown || (item.subMenu && item.subMenu.length > 0)
 
             return (
@@ -149,20 +170,24 @@ export default function Header() {
                 {hasDropdown ? (
                   <>
                     <button
-                      className={`font-semibold text-[15px] flex items-center gap-1 transition-colors ${isActive ? 'text-[#209AEA]' : 'text-[#005ABA] hover:text-[#209AEA]'}`}
+                      className={`font-semibold text-[15px] flex items-center gap-1 transition-colors ${
+                        isActive ? 'text-[#209AEA]' : 'text-[#005ABA] hover:text-[#209AEA]'
+                      }`}
                     >
                       {item.label}
                       <ChevronDownIcon className="w-3 h-3 ml-0.5 opacity-70" />
                     </button>
+
                     <div className="absolute left-0 top-full pt-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                       <ul className="w-72 bg-white border border-gray-100 shadow-xl py-2 rounded-lg">
                         {dropdownItems?.map((sub) => {
                           const children = sub.subBrands || sub.nestedItems
                           const hasChildren = children && children.length > 0
+
                           return (
                             <li
                               key={sub.name}
-                              className="relative px-5 py-2.5 hover:bg-gray-50 flex justify-between items-center cursor-pointer group/nested"
+                              className="relative px-5 py-2.5 hover:bg-gray-50 flex justify-between items-center cursor-pointer"
                               onMouseEnter={() => setActiveNestedMenu(sub.name)}
                             >
                               {sub.href ? (
@@ -177,9 +202,11 @@ export default function Header() {
                                   {sub.name}
                                 </span>
                               )}
+
                               {hasChildren && (
                                 <ChevronRightIcon className="w-3 h-3 text-gray-400" />
                               )}
+
                               {hasChildren && activeNestedMenu === sub.name && (
                                 <div className="absolute left-full top-0 pl-1">
                                   <ul className="w-64 bg-white border border-gray-100 shadow-xl py-2 rounded-lg max-h-[70vh] overflow-y-auto">
@@ -212,7 +239,11 @@ export default function Header() {
                 ) : (
                   <Link
                     href={item.href}
-                    className={`font-semibold text-[15px] transition-colors border-b-2 pb-1 ${isActive ? 'text-[#209AEA] border-[#209AEA]' : 'text-[#005ABA] border-transparent hover:text-[#209AEA] hover:border-[#209AEA]'}`}
+                    className={`font-semibold text-[15px] transition-colors border-b-2 pb-1 ${
+                      isActive
+                        ? 'text-[#209AEA] border-[#209AEA]'
+                        : 'text-[#005ABA] border-transparent hover:text-[#209AEA] hover:border-[#209AEA]'
+                    }`}
                   >
                     {item.label}
                   </Link>
@@ -222,6 +253,7 @@ export default function Header() {
           })}
         </div>
 
+        {/* Mobile Toggle */}
         <button className="lg:hidden p-2 text-[#005ABA]" onClick={() => setIsOpen(!isOpen)}>
           <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -233,102 +265,6 @@ export default function Header() {
           </svg>
         </button>
       </nav>
-
-      {/* ================= MOBILE MENU ================= */}
-      {isOpen && (
-        <div className="lg:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full left-0 py-4 z-50 overflow-y-auto max-h-[calc(100vh-80px)]">
-          {menuItems.map((item) => {
-            const isActive = item.href !== '#' && pathname.startsWith(item.href)
-            const dropdownItems = (
-              item.label === 'Involvements' ? involvements : item.subMenu
-            ) as UnifiedDropdownItem[]
-            const hasDropdown = dropdownItems && dropdownItems.length > 0
-            const isExpanded = mobileExpandedItem === item.label
-
-            return (
-              <div key={item.label} className="border-b border-gray-50 last:border-none">
-                {hasDropdown ? (
-                  <>
-                    <button
-                      onClick={() => toggleMobileItem(item.label)}
-                      className={`w-full flex justify-between items-center px-8 py-4 font-bold transition-all ${
-                        isActive || isExpanded ? 'text-[#209AEA] bg-blue-50' : 'text-[#005ABA]'
-                      }`}
-                    >
-                      <span>{item.label}</span>
-                      {isExpanded ? (
-                        <ChevronUpIcon className="w-5 h-5" />
-                      ) : (
-                        <ChevronDownIcon className="w-5 h-5" />
-                      )}
-                    </button>
-
-                    {isExpanded && (
-                      <div className="bg-gray-50/50 py-2">
-                        {dropdownItems.map((sub) => {
-                          const children = sub.subBrands || sub.nestedItems
-                          const hasChildren = children && children.length > 0
-
-                          return (
-                            <div key={sub.name} className="px-8 mb-2">
-                              {/* Sub-Brand Heading / Main Item */}
-                              <div className="pl-4 border-l-2 border-[#209AEA]/30">
-                                {sub.href ? (
-                                  <Link
-                                    href={sub.href}
-                                    onClick={() => setIsOpen(false)}
-                                    className="block py-2 text-[15px] text-[#0057B7] font-semibold hover:text-[#209AEA]"
-                                  >
-                                    {sub.name}
-                                  </Link>
-                                ) : (
-                                  <div className="py-2 text-[12px] text-[#2257A6] font-bold uppercase tracking-wider opacity-70">
-                                    {sub.name}
-                                  </div>
-                                )}
-
-                                {/* Nested Items with thin blue borders */}
-                                {hasChildren && (
-                                  <ul className="mt-1 space-y-1">
-                                    {children.map((nested) => (
-                                      <li
-                                        key={nested.name}
-                                        className="pl-4 border-l border-blue-200"
-                                      >
-                                        <Link
-                                          href={nested.href}
-                                          onClick={() => setIsOpen(false)}
-                                          className="block py-2 text-[14px] text-gray-600 active:text-[#209AEA] transition-colors"
-                                        >
-                                          {nested.name}
-                                        </Link>
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <Link
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`block px-8 py-4 font-bold transition-all ${
-                      isActive ? 'bg-blue-50 text-[#209AEA]' : 'text-[#005ABA]'
-                    }`}
-                  >
-                    {item.label}
-                  </Link>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      )}
     </header>
   )
 }

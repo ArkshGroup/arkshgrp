@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import PageBanner from "./PageBanner";
+import { useState } from 'react'
+import PageBanner from './PageBanner'
 import {
   HomeIcon,
   PhoneIcon,
@@ -12,44 +12,77 @@ import {
   UserIcon,
   TagIcon,
   ChatBubbleLeftEllipsisIcon,
-} from "@heroicons/react/24/outline";
-import { HomeIcon as HomeIconSolid } from "@heroicons/react/24/solid";
+} from '@heroicons/react/24/outline'
+import { HomeIcon as HomeIconSolid } from '@heroicons/react/24/solid'
+import toast, { Toaster } from 'react-hot-toast'
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    phone: "",
-    subject: "",
-    message: "",
-  });
+    fullName: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: '',
+  })
+
+  const [loading, setLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
   ) => {
-    const { name, value } = e.target;
+    const { name, value } = e.target
     setFormData((prev) => ({
       ...prev,
       [name]: value,
-    }));
-  };
+    }))
+  }
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submitted:", formData);
-    setFormData({
-      fullName: "",
-      email: "",
-      phone: "",
-      subject: "",
-      message: "",
-    });
-  };
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setLoading(true)
+    setSuccess(false)
+
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/contacts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName: formData.fullName,
+          email: formData.email,
+          phone: formData.phone,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      })
+
+      if (!res.ok) throw new Error('Submission failed')
+
+      setSuccess(true)
+
+      toast.success('Message sent successfully!') // ✅ SUCCESS TOAST
+
+      setFormData({
+        fullName: '',
+        email: '',
+        phone: '',
+        subject: '',
+        message: '',
+      })
+    } catch (error) {
+      console.error('Error submitting form:', error)
+
+      toast.error('Something went wrong. Please try again.') // ✅ ERROR TOAST
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <section>
+      <Toaster position="top-center" reverseOrder={false} /> {/* ✅ ADDED */}
       <PageBanner
         title="Contact Us"
         padding="py-8 sm:py-10 md:py-12 px-4 sm:px-6"
@@ -57,11 +90,11 @@ export default function ContactSection() {
         textAlign="center"
         breadcrumb={[
           {
-            name: "Home",
-            href: "/",
+            name: 'Home',
+            href: '/',
             icon: <HomeIconSolid className="w-5 h-5" />,
           },
-          { name: "Contact" },
+          { name: 'Contact' },
         ]}
       />
       <div className="w-full bg-gray-50 py-16 sm:py-20 md:py-24 lg:py-32">
@@ -69,14 +102,11 @@ export default function ContactSection() {
           {/* Header Section */}
           <div className="text-center mb-12 sm:mb-16 md:mb-20">
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#1E73BE] mb-4 sm:mb-6">
-              Get in{" "}
-              <span className="border-b border-blue-500 px-2">Touch</span> with
-              Us
+              Get in <span className="border-b border-blue-500 px-2">Touch</span> with Us
             </h1>
             <p className="text-gray-600 text-sm sm:text-base md:text-lg max-w-3xl mx-auto leading-relaxed">
-              Whether you have a question about our services, need a quote, or
-              want to discuss a project, our team is ready to respond to all
-              your inquiries.
+              Whether you have a question about our services, need a quote, or want to discuss a
+              project, our team is ready to respond to all your inquiries.
             </p>
           </div>
 
@@ -91,9 +121,7 @@ export default function ContactSection() {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
-                    Call Us
-                  </h3>
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Call Us</h3>
                   <p className="text-[#1E73BE] text-sm md:text-base font-semibold">
                     +977-1-4002069
                   </p>
@@ -111,9 +139,7 @@ export default function ContactSection() {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
-                    Visit Us
-                  </h3>
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Visit Us</h3>
                   <p className="text-gray-600 text-sm md:text-base leading-relaxed">
                     152 Rani Devi Marg Lazimpat, Kathmandu, Nepal.
                   </p>
@@ -128,9 +154,7 @@ export default function ContactSection() {
                   </div>
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">
-                    Email Us
-                  </h3>
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-2">Email Us</h3>
                   <p className="text-[#1E73BE] text-sm md:text-base font-semibold break-all">
                     info@arkshgroup.com
                   </p>
@@ -162,7 +186,6 @@ export default function ContactSection() {
               </h2>
 
               <form onSubmit={handleSubmit} className="space-y-10">
-                {/* Full Name */}
                 <div className="relative">
                   <label className="absolute -top-3.5 left-4 bg-white px-2 flex items-center gap-2 text-[#1E73BE] font-medium z-10">
                     <UserIcon className="w-5 h-5" />
@@ -178,8 +201,8 @@ export default function ContactSection() {
                   />
                 </div>
 
+                {/* Email + Phone */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-10">
-                  {/* Email */}
                   <div className="relative">
                     <label className="absolute -top-3.5 left-4 bg-white px-2 flex items-center gap-2 text-[#1E73BE] font-medium z-10">
                       <EnvelopeIcon className="w-5 h-5" />
@@ -195,7 +218,6 @@ export default function ContactSection() {
                     />
                   </div>
 
-                  {/* Phone */}
                   <div className="relative">
                     <label className="absolute -top-3.5 left-4 bg-white px-2 flex items-center gap-2 text-[#1E73BE] font-medium z-10">
                       <PhoneIcon className="w-5 h-5" />
@@ -211,9 +233,8 @@ export default function ContactSection() {
                   </div>
                 </div>
 
-                {/* Subject */}
                 <div className="relative">
-                  <label className="absolute -top-3.5 left-4 bg-white px-2 flex items-center gap-2 text-gray-500 font-medium z-10">
+                  <label className="absolute -top-3.5 left-4 bg-white px-2 flex items-center gap-2 text-[#1E73BE] font-medium z-10">
                     <TagIcon className="w-5 h-5" />
                     What's this about?
                   </label>
@@ -221,17 +242,26 @@ export default function ContactSection() {
                     name="subject"
                     value={formData.subject}
                     onChange={handleChange}
-                    className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E73BE] focus:border-transparent transition text-gray-500 bg-white appearance-none"
                     required
+                    className={`w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E73BE] focus:border-transparent transition bg-transparent ${
+                      formData.subject === '' ? 'text-gray-400' : 'text-gray-900'
+                    }`}
                   >
-                    <option value="">Select a Subject</option>
-                    <option value="general">General Inquiry</option>
-                    <option value="support">Customer Support</option>
-                    <option value="sales">Sales Inquiry</option>
+                    <option value="" disabled hidden>
+                      Select a Subject
+                    </option>
+                    <option value="General Inquiry" className="text-gray-900">
+                      General Inquiry
+                    </option>
+                    <option value="Customer Support" className="text-gray-900">
+                      Customer Support
+                    </option>
+                    <option value="Sales Inquiry" className="text-gray-900">
+                      Sales Inquiry
+                    </option>
                   </select>
                 </div>
 
-                {/* Message */}
                 <div className="relative">
                   <label className="absolute -top-3.5 left-4 bg-white px-2 flex items-center gap-2 text-[#1E73BE] font-medium z-10">
                     <ChatBubbleLeftEllipsisIcon className="w-5 h-5" />
@@ -242,16 +272,17 @@ export default function ContactSection() {
                     value={formData.message}
                     onChange={handleChange}
                     rows={6}
-                    className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E73BE] focus:border-transparent transition text-gray-900 resize-none bg-transparent"
+                    className="w-full px-4 py-4 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#1E73BE] focus:border-transparent transition text-gray-900 bg-transparent"
                     required
-                  ></textarea>
+                  />
                 </div>
 
                 <button
                   type="submit"
-                  className="group/btn w-full bg-[#1E73BE] hover:bg-[#165aa7] text-white font-bold py-5 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 text-xl shadow-lg shadow-blue-100 hover:shadow-blue-200"
+                  disabled={loading}
+                  className="group/btn w-full bg-[#1E73BE] hover:bg-[#165aa7] text-white font-bold py-5 px-6 rounded-xl transition-all duration-300 flex items-center justify-center gap-3 text-xl shadow-lg shadow-blue-100 hover:shadow-blue-200 disabled:opacity-70"
                 >
-                  Send Message
+                  {loading ? 'Sending...' : 'Send Message'}
                   <PaperAirplaneIcon className="w-6 h-6 transition-transform duration-300 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 -rotate-12" />
                 </button>
               </form>
@@ -259,7 +290,6 @@ export default function ContactSection() {
           </div>
         </div>
       </div>
-
       {/* Map Section */}
       <div className="w-full h-125 grayscale hover:grayscale-0 transition-all duration-1000">
         <iframe
@@ -272,5 +302,5 @@ export default function ContactSection() {
         ></iframe>
       </div>
     </section>
-  );
+  )
 }

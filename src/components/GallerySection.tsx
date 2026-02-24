@@ -6,6 +6,9 @@ import { HomeIcon } from '@heroicons/react/24/solid'
 import Image from 'next/image'
 import PageBanner from './PageBanner'
 
+import CircularProgress from '@mui/material/CircularProgress'
+import Box from '@mui/material/Box'
+
 interface GalleryItem {
   id: string
   title: string
@@ -24,7 +27,7 @@ export default function GallerySection() {
   useEffect(() => {
     const fetchGallery = async () => {
       try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/photos?depth=1`)
+        const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/gallery?depth=1`)
 
         const data = await res.json()
         setImages(Array.isArray(data.docs) ? data.docs : [])
@@ -38,7 +41,6 @@ export default function GallerySection() {
     fetchGallery()
   }, [])
 
-  // Generate categories dynamically
   const categories = useMemo(() => {
     const unique = Array.from(new Set(images.map((img) => img.category)))
     return ['All', ...unique]
@@ -46,6 +48,24 @@ export default function GallerySection() {
 
   const filteredItems =
     filter === 'All' ? images : images.filter((item) => item.category === filter)
+
+  /* ===================== */
+  /* FULL PAGE LOADER     */
+  /* ===================== */
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-white">
+        <Box>
+          <CircularProgress size={70} thickness={4} sx={{ color: '#3498db' }} />
+        </Box>
+      </main>
+    )
+  }
+
+  /* ===================== */
+  /* ORIGINAL PAGE BELOW   */
+  /* ===================== */
 
   return (
     <main className="bg-white min-h-screen">
@@ -80,9 +100,7 @@ export default function GallerySection() {
           </div>
 
           {/* Gallery Grid */}
-          {loading ? (
-            <p className="text-center text-gray-500 py-20">Loading gallery...</p>
-          ) : filteredItems.length === 0 ? (
+          {filteredItems.length === 0 ? (
             <p className="text-center text-gray-400 py-20">No images found.</p>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">

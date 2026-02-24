@@ -77,6 +77,9 @@ export interface Config {
     applications: Application;
     users: User;
     gallery: Gallery;
+    news: News;
+    'youtube-news': YoutubeNew;
+    'gallery-album': GalleryAlbum;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -93,6 +96,9 @@ export interface Config {
     applications: ApplicationsSelect<false> | ApplicationsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     gallery: GallerySelect<false> | GallerySelect<true>;
+    news: NewsSelect<false> | NewsSelect<true>;
+    'youtube-news': YoutubeNewsSelect<false> | YoutubeNewsSelect<true>;
+    'gallery-album': GalleryAlbumSelect<false> | GalleryAlbumSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -135,11 +141,11 @@ export interface UserAuthOperations {
  */
 export interface Contact {
   id: string;
-  name: string;
-  phone: string;
+  fullName: string;
   email: string;
+  phone: string;
+  subject: 'General Inquiry' | 'Customer Support' | 'Sales Inquiry';
   message: string;
-  status?: ('pending' | 'read') | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -343,6 +349,42 @@ export interface Gallery {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news".
+ */
+export interface News {
+  id: string;
+  image: string | Media;
+  date: string;
+  title: string;
+  excerpt: string;
+  link: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "youtube-news".
+ */
+export interface YoutubeNew {
+  id: string;
+  cornerType: 'chairman' | 'ceo';
+  youtubeUrl: string;
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-album".
+ */
+export interface GalleryAlbum {
+  id: string;
+  image: string | Media;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -387,6 +429,18 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'gallery';
         value: string | Gallery;
+      } | null)
+    | ({
+        relationTo: 'news';
+        value: string | News;
+      } | null)
+    | ({
+        relationTo: 'youtube-news';
+        value: string | YoutubeNew;
+      } | null)
+    | ({
+        relationTo: 'gallery-album';
+        value: string | GalleryAlbum;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -435,11 +489,11 @@ export interface PayloadMigration {
  * via the `definition` "contacts_select".
  */
 export interface ContactsSelect<T extends boolean = true> {
-  name?: T;
-  phone?: T;
+  fullName?: T;
   email?: T;
+  phone?: T;
+  subject?: T;
   message?: T;
-  status?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -580,6 +634,39 @@ export interface GallerySelect<T extends boolean = true> {
   title?: T;
   category?: T;
   year?: T;
+  image?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "news_select".
+ */
+export interface NewsSelect<T extends boolean = true> {
+  image?: T;
+  date?: T;
+  title?: T;
+  excerpt?: T;
+  link?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "youtube-news_select".
+ */
+export interface YoutubeNewsSelect<T extends boolean = true> {
+  cornerType?: T;
+  youtubeUrl?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-album_select".
+ */
+export interface GalleryAlbumSelect<T extends boolean = true> {
   image?: T;
   updatedAt?: T;
   createdAt?: T;
