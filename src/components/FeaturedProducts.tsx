@@ -8,15 +8,21 @@ export default function FeaturedProducts() {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [mounted, setMounted] = useState(false) // State to track mounting
+
+  // 1. Set mounted to true once component hits the browser
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   // Auto-slide every 3 seconds
   useEffect(() => {
-    if (isPaused) return
+    if (isPaused || !mounted) return
     const interval = setInterval(() => {
       handleNext()
     }, 3000)
     return () => clearInterval(interval)
-  }, [currentIndex, isPaused])
+  }, [currentIndex, isPaused, mounted])
 
   const handleNext = () => {
     setIsTransitioning(true)
@@ -36,17 +42,23 @@ export default function FeaturedProducts() {
 
   const getVisibleImages = () => {
     const visible = []
-    // Determine number of images based on screen size
-    const imagesToShow = typeof window !== 'undefined' && window.innerWidth >= 768 ? 3 : 1
+    // 2. Safely check for window only after mounting
+    const imagesToShow = mounted && window.innerWidth >= 768 ? 3 : 1
+
     for (let i = 0; i < imagesToShow; i++) {
       visible.push(images[(currentIndex + i) % images.length])
     }
     return visible
   }
 
+  // 3. Return a consistent placeholder during SSR to prevent mismatch
+  if (!mounted) {
+    return <div className="py-16 bg-white min-h-150" />
+  }
+
   return (
     <section
-      className="py-16 bg-white w-full"
+      className="py-16 bg-[#F5F5F7] w-full"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
@@ -82,7 +94,7 @@ export default function FeaturedProducts() {
           >
             {getVisibleImages().map((img, idx) => (
               <div
-                key={idx}
+                key={`${currentIndex}-${idx}`} // Improved key to handle transitions
                 className="relative w-full h-75 sm:h-100 md:h-112.5 overflow-hidden rounded-xl shadow-lg"
               >
                 <Image
@@ -90,8 +102,8 @@ export default function FeaturedProducts() {
                   alt={`Featured ${currentIndex + idx + 1}`}
                   fill
                   className="object-cover transition-transform duration-700"
-                  sizes="100vw"
-                  priority={currentIndex + idx === 0}
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  priority={currentIndex === 0}
                 />
               </div>
             ))}
@@ -112,6 +124,7 @@ export default function FeaturedProducts() {
             <button
               key={idx}
               onClick={() => {
+                if (currentIndex === idx) return
                 setIsTransitioning(true)
                 setTimeout(() => {
                   setCurrentIndex(idx)

@@ -42,12 +42,9 @@ const Nav: React.FC = () => {
                   Contacts
                 </Link>
               </li>
-           
             </ul>
           )}
         </div>
-
-      
 
         {/* MEDIA */}
         <div className="nav-group">
@@ -56,7 +53,7 @@ const Nav: React.FC = () => {
           </div>
           <ul className="nav-links">
             <li>
-              <Link href="/admin/collections/photos">
+              <Link href="/admin/collections/gallery">
                 <span className="nav-icon">📸</span>
                 Gallery
               </Link>
@@ -90,7 +87,6 @@ const Nav: React.FC = () => {
                   Blogs
                 </Link>
               </li>
-         
             </ul>
           )}
         </div>

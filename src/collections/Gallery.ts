@@ -2,7 +2,7 @@
 import { CollectionConfig } from 'payload'
 
 export const Gallery: CollectionConfig = {
-  slug: 'photos',
+  slug: 'gallery',
   admin: {
     useAsTitle: 'title',
   },

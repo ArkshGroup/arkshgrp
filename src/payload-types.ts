@@ -76,7 +76,7 @@ export interface Config {
     careers: Career;
     applications: Application;
     users: User;
-    photos: Photo;
+    gallery: Gallery;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -92,7 +92,7 @@ export interface Config {
     careers: CareersSelect<false> | CareersSelect<true>;
     applications: ApplicationsSelect<false> | ApplicationsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
-    photos: PhotosSelect<false> | PhotosSelect<true>;
+    gallery: GallerySelect<false> | GallerySelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -330,9 +330,9 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "photos".
+ * via the `definition` "gallery".
  */
-export interface Photo {
+export interface Gallery {
   id: string;
   title: string;
   category: 'Events' | 'Automobiles' | 'Corporate' | 'Wellness' | 'Award Ceremony';
@@ -385,8 +385,8 @@ export interface PayloadLockedDocument {
         value: string | User;
       } | null)
     | ({
-        relationTo: 'photos';
-        value: string | Photo;
+        relationTo: 'gallery';
+        value: string | Gallery;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -574,9 +574,9 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "photos_select".
+ * via the `definition` "gallery_select".
  */
-export interface PhotosSelect<T extends boolean = true> {
+export interface GallerySelect<T extends boolean = true> {
   title?: T;
   category?: T;
   year?: T;
