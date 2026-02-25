@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import {
   MapPinIcon,
   BriefcaseIcon,
@@ -18,36 +18,134 @@ import {
 } from '@heroicons/react/24/outline'
 import { HomeIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
-import { JOBS_DATA } from '@/constant/career.data'
+import toast, { Toaster } from 'react-hot-toast'
+import type { Career as CareerType } from '@/payload-types'
 
-// --- Mock Data ---
+const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
 
 export default function CareerSection() {
-  const [selectedJob, setSelectedJob] = useState<(typeof JOBS_DATA)[0] | null>(null)
+  const [careers, setCareers] = useState<CareerType[]>([])
+  const [selectedJob, setSelectedJob] = useState<CareerType | null>(null)
   const [employmentStatus, setEmploymentStatus] = useState('Unemployed')
   const [hasReferrer, setHasReferrer] = useState(false)
   const [selectedPosition, setSelectedPosition] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [resumePreview, setResumePreview] = useState<{ name: string; size: number } | null>(null)
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  useEffect(() => {
+    const fetchCareers = async () => {
+      try {
+        const res = await fetch(
+          `${PAYLOAD_BASE_URL}/api/careers?where[status][equals]=open&sort=order`,
+        )
+        const data = await res.json()
+        setCareers(Array.isArray(data.docs) ? data.docs : [])
+      } catch (error) {
+        console.error('Error fetching careers:', error)
+      }
+    }
+    fetchCareers()
+  }, [])
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     const formData = new FormData(e.currentTarget)
     const data = Object.fromEntries(formData.entries())
 
-    const finalSubmission = {
-      ...data,
-      employmentStatus,
-      hasReferrer,
+    if (!selectedPosition) {
+      toast.error('Please select a position.')
+      return
     }
 
-    console.log('Form Submitted:', finalSubmission)
-    alert('Application Submitted Successfully!')
+    // Optional CV upload
+    let cvMediaId: string | undefined
+    const resumeFile = formData.get('resume') as File | null
+
+    let submittedOk = false
+    try {
+      setSubmitting(true)
+
+      if (resumeFile && resumeFile.size > 0) {
+        const uploadForm = new FormData()
+        uploadForm.append('file', resumeFile)
+        // Optional alt text for the media
+        uploadForm.append(
+          'alt',
+          `${(data.fullName as string) || 'CV'} - ${selectedPosition}`,
+        )
+
+        const uploadRes = await fetch(
+          `${PAYLOAD_BASE_URL}/api/media`,
+          {
+            method: 'POST',
+            body: uploadForm,
+          },
+        )
+
+        if (!uploadRes.ok) {
+          throw new Error(`Failed to upload CV (${uploadRes.status})`)
+        }
+
+        const uploadJson = await uploadRes.json()
+        cvMediaId = uploadJson?.doc?.id || uploadJson?.id
+      }
+
+    const payload = {
+      name: (data.fullName as string) ?? '',
+      email: (data.email as string) ?? '',
+      phone: (data.phoneNumber as string) ?? '',
+      location: (data.location as string) ?? '',
+      position: selectedPosition,
+      expectedSalary: data.expectedSalary ? Number(data.expectedSalary as string) : undefined,
+      startDate: (data.startDate as string) || undefined,
+      experience: (data.experience as string) ?? '',
+      employmentStatus,
+      hasReferrer,
+      referrerName: (data.referrerName as string) || undefined,
+      referrerEmail: (data.referrerEmail as string) || undefined,
+      cv: cvMediaId,
+    }
+
+      const res = await fetch(
+        `${PAYLOAD_BASE_URL}/api/applications`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        },
+      )
+
+      if (!res.ok) {
+        throw new Error(`Failed to submit application (${res.status})`)
+      }
+
+      submittedOk = true
+      toast.success('Application submitted successfully!')
+
+      try {
+        e.currentTarget.reset()
+        setSelectedPosition('')
+        setEmploymentStatus('Unemployed')
+        setHasReferrer(false)
+        setResumePreview(null)
+      } catch (_) {
+        // Ignore errors from reset/state (e.g. file input clear) so we don't show error toast
+      }
+    } catch (error) {
+      console.error('Error submitting application:', error)
+      if (!submittedOk) {
+        toast.error('Sorry, something went wrong submitting your application.')
+      }
+    } finally {
+      setSubmitting(false)
+    }
   }
 
-  const handleApplyNow = (title: string) => {
+  const handleApplyNow = useCallback((title: string) => {
     setSelectedPosition(title)
     document.getElementById('application-form')?.scrollIntoView({ behavior: 'smooth' })
     setSelectedJob(null)
-  }
+  }, [])
 
   useEffect(() => {
     if (selectedJob) {
@@ -63,6 +161,7 @@ export default function CareerSection() {
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
+      <Toaster position="top-center" reverseOrder={false} />
       {/* 1. Header/Banner */}
       <div
         className="relative h-60 flex items-center justify-center text-white bg-cover bg-center"
@@ -87,7 +186,12 @@ export default function CareerSection() {
 
       {/* 2. Job Listings */}
       <div className="max-w-400 mx-auto px-4 py-16 space-y-4">
-        {JOBS_DATA.map((job) => (
+        {careers.length === 0 && (
+          <p className="text-center text-gray-500">
+            Currently no positions available. Please check back later.
+          </p>
+        )}
+        {careers.map((job) => (
           <div
             key={job.id}
             className="bg-white border border-gray-100 rounded-xl shadow-sm p-10 flex flex-col md:flex-row md:items-center justify-between gap-4"
@@ -95,20 +199,26 @@ export default function CareerSection() {
             <div className="space-y-2">
               <div className="flex items-center gap-3">
                 <h3 className="text-2xl font-bold text-gray-800">{job.title}</h3>
-                <span className="bg-green-100 text-green-600 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">
-                  Active
-                </span>
+                {job.status === 'open' && (
+                  <span className="bg-green-100 text-green-600 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">
+                    Open
+                  </span>
+                )}
               </div>
               <div className="flex flex-wrap gap-4 text-xs text-gray-500 font-medium">
                 <span className="flex items-center gap-1.5">
-                  <MapPinIcon className="w-4 h-4 text-blue-600" /> {job.location}
+                  <MapPinIcon className="w-4 h-4 text-blue-600" /> {job.location || 'Location not specified'}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <ClockIcon className="w-4 h-4 text-blue-600" /> {job.type}
+                  <ClockIcon className="w-4 h-4 text-blue-600" /> {job.type || 'N/A'}
                 </span>
-                <span className="flex items-center gap-1.5">
-                  <UsersIcon className="w-4 h-4 text-blue-600" /> {job.positions}
-                </span>
+                {job.deadline && (
+                  <span className="flex items-center gap-1.5">
+                    <ClockIcon className="w-4 h-4 text-blue-600" />{' '}
+                    Deadline:{' '}
+                    {new Date(job.deadline).toLocaleDateString()}
+                  </span>
+                )}
               </div>
             </div>
             <div className="flex items-center gap-3">
@@ -152,41 +262,23 @@ export default function CareerSection() {
               <div className="flex flex-col md:flex-row">
                 {/* Main Content Area */}
                 <div className="flex-2 p-8 space-y-8">
-                  {/* About Section (if exists in mock data) */}
-                  {selectedJob.about && (
-                    <section className="space-y-4">
-                      <h4 className="text-lg font-bold text-gray-800 flex items-center gap-2">
-                        <BuildingOfficeIcon className="w-5 h-5 text-blue-600" />
-                        About Company
-                      </h4>
-                      <p className="text-gray-600 leading-relaxed text-sm">
-                        {selectedJob.about.company}
-                      </p>
-                    </section>
-                  )}
-
                   {/* Requirements Section */}
                   <section className="space-y-4">
                     <h4 className="text-lg font-bold text-gray-800 flex items-center gap-2">
                       <AcademicCapIcon className="w-5 h-5 text-blue-600" />
                       Requirements & Skills
                     </h4>
-                    <ul className="grid grid-cols-1 gap-3">
-                      {selectedJob.requirements?.map((req, index) => (
-                        <li key={index} className="flex items-start gap-3 text-sm text-gray-600">
-                          <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 shrink-0" />
-                          {req}
-                        </li>
-                      ))}
-                    </ul>
+                    <p className="text-sm text-gray-600 whitespace-pre-line">
+                      {selectedJob.requirements || 'Not specified.'}
+                    </p>
                   </section>
 
-                  {/* Role Description (for Social Media Strategist type data) */}
-                  {selectedJob.about?.role && (
+                  {/* Role Description / Responsibilities */}
+                  {selectedJob.responsibilities && (
                     <section className="space-y-4">
-                      <h4 className="text-lg font-bold text-gray-800">Role Description</h4>
-                      <p className="text-gray-600 leading-relaxed text-sm">
-                        {selectedJob.about.role}
+                      <h4 className="text-lg font-bold text-gray-800">Key Responsibilities</h4>
+                      <p className="text-gray-600 leading-relaxed text-sm whitespace-pre-line">
+                        {selectedJob.responsibilities}
                       </p>
                     </section>
                   )}
@@ -209,31 +301,13 @@ export default function CareerSection() {
                       </div>
 
                       <div className="flex items-start gap-3">
-                        <UsersIcon className="w-5 h-5 text-blue-600 shrink-0" />
-                        <div>
-                          <p className="text-xs text-gray-500">Openings</p>
-                          <p className="text-sm font-semibold text-gray-800">
-                            {selectedJob.positions}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
-                        <PaperAirplaneIcon className="w-5 h-5 text-blue-600 shrink-0" />
-                        <div>
-                          <p className="text-xs text-gray-500">Posted On</p>
-                          <p className="text-sm font-semibold text-gray-800">
-                            {selectedJob.posted}
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex items-start gap-3">
                         <XMarkIcon className="w-5 h-5 text-red-500 shrink-0" />
                         <div>
                           <p className="text-xs text-gray-500">Deadline</p>
                           <p className="text-sm font-semibold text-gray-800">
-                            {selectedJob.deadline}
+                            {selectedJob.deadline
+                              ? new Date(selectedJob.deadline).toLocaleDateString()
+                              : 'Not specified'}
                           </p>
                         </div>
                       </div>
@@ -350,7 +424,7 @@ export default function CareerSection() {
                   required
                 >
                   <option value="">Select a Position</option>
-                  {JOBS_DATA.map((job) => (
+                  {careers.map((job) => (
                     <option key={job.id} value={job.title}>
                       {job.title}
                     </option>
@@ -434,6 +508,14 @@ export default function CareerSection() {
                   name="resume"
                   className="hidden"
                   accept=".pdf,.doc,.docx"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0]
+                    if (file) {
+                      setResumePreview({ name: file.name, size: file.size })
+                    } else {
+                      setResumePreview(null)
+                    }
+                  }}
                 />
                 <label
                   htmlFor="resume-upload"
@@ -451,6 +533,26 @@ export default function CareerSection() {
                   </p>
                 </label>
               </div>
+
+              {resumePreview && (
+                <div className="mt-6 flex items-center justify-center gap-3 text-sm text-gray-700">
+                  <span className="font-medium">{resumePreview.name}</span>
+                  <span className="text-gray-400 text-xs">
+                    ({Math.round(resumePreview.size / 1024)} KB)
+                  </span>
+                  <button
+                    type="button"
+                    className="text-red-500 text-xs font-semibold"
+                    onClick={() => {
+                      const input = document.getElementById('resume-upload') as HTMLInputElement | null
+                      if (input) input.value = ''
+                      setResumePreview(null)
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
             </div>
 
             {/* Referrer Toggle & Fields */}
@@ -508,10 +610,11 @@ export default function CareerSection() {
             <div className="flex justify-center pt-8">
               <button
                 type="submit"
-                className="flex items-center gap-3 px-16 py-5 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 transition-all shadow-xl text-lg group"
+                disabled={submitting}
+                className="flex items-center gap-3 px-16 py-5 bg-blue-600 text-white font-bold rounded-2xl hover:bg-blue-700 disabled:opacity-60 disabled:cursor-not-allowed transition-all shadow-xl text-lg group"
               >
                 <PaperAirplaneIcon className="w-6 h-6 -rotate-12 group-hover:translate-x-1 transition-transform" />
-                Submit Application
+                {submitting ? 'Submitting...' : 'Submit Application'}
               </button>
             </div>
           </form>

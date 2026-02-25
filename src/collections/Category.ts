@@ -1,10 +1,13 @@
 import { CollectionConfig } from 'payload'
 
+
+
 const Category: CollectionConfig = {
   slug: 'categories',
   admin: {
     useAsTitle: 'name',
     group: 'MEDIA',
+    description: 'Categories for Gallery. Add categories here, then assign them to Gallery items.',
   },
   access: {
     read: () => true,
@@ -24,7 +27,7 @@ const Category: CollectionConfig = {
       )
     },
   },
-
+  
   fields: [
     {
       name: 'name',

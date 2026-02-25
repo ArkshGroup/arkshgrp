@@ -15,7 +15,6 @@ import Notice from './collections/Notice'
 import Category from './collections/Category'
 import Career from './collections/Career'
 import Applications from './collections/Applications'
-import Bookings from './collections/Bookings'
 import { Gallery } from './collections/Gallery'
 import News from './collections/News'
 import { YoutubeNews } from './collections/YoutubeNews'
@@ -37,7 +36,7 @@ export default buildConfig({
         {
           rel: 'icon',
           type: 'image/png',
-          url: '/loader1.png',
+          url: '/logo.jpg',
         },
       ],
     },
@@ -53,7 +52,7 @@ export default buildConfig({
   cors: ['https://arkshgroup.com', 'https://www.arkshgroup.com'],
   collections: [
     Contact,
-    Bookings,
+   
     Category,
     Media,
     Notice,

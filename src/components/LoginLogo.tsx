@@ -5,8 +5,8 @@ const LoginLogo = () => {
   return (
     <>
       <Image
-        src="/logo2.png" 
-        alt="Hotel Peaceeland Logo"
+        src="/logo.jpg" 
+        alt="Arksh Group Logo"
         width={180}
         height={60}
         priority

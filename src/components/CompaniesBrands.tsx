@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import { HomeIcon } from "@heroicons/react/24/solid";
 import PageBanner from "@/components/PageBanner";
@@ -17,76 +17,32 @@ import b3 from "@/assets/brands/b3.png";
 import b4 from "@/assets/brands/b4.png";
 import b5 from "@/assets/brands/b5.png";
 
+const COMPANIES = [
+  { id: 1, name: "NIB", logo: c1 },
+  { id: 2, name: "Arksh Digital", logo: c2 },
+  { id: 3, name: "Rajesh Concern", logo: c3 },
+  { id: 4, name: "Himalayan Organic Agro", logo: c4 },
+  { id: 5, name: "Hotel Peaceland", logo: c5 },
+  { id: 6, name: "Book My Ticket", logo: c6 },
+];
+
+const BRANDS = [
+  { id: 1, name: "HIGER", logo: b1 },
+  { id: 2, name: "Golden Dragon", logo: b2 },
+  { id: 3, name: "JUBAO", logo: b3 },
+  { id: 4, name: "Tafeli", logo: b4 },
+  { id: 5, name: "Didian", logo: b5 },
+];
+
 export default function CompaniesBrands() {
-  // State to toggle between 'companies' and 'brands'
   const [activeTab, setActiveTab] = useState<"companies" | "brands">(
     "companies",
   );
 
-  // Data for Associated Companies
-  const companies = [
-    {
-      id: 1,
-      name: "NIB",
-      logo: c1,
-    },
-    {
-      id: 2,
-      name: "Arksh Digital",
-      logo: c2,
-    },
-    {
-      id: 3,
-      name: "Rajesh Concern",
-      logo: c3,
-    },
-    {
-      id: 4,
-      name: "Himalayan Organic Agro",
-      logo: c4,
-    },
-    {
-      id: 5,
-      name: "Hotel Peaceland",
-      logo: c5,
-    },
-    {
-      id: 6,
-      name: "Book My Ticket",
-      logo: c6,
-    },
-  ];
-
-  // Data for Associated Brands
-  const brands = [
-    {
-      id: 1,
-      name: "HIGER",
-      logo: b1,
-    },
-    {
-      id: 2,
-      name: "Golden Dragon",
-      logo: b2,
-    },
-    {
-      id: 3,
-      name: "JUBAO",
-      logo: b3,
-    },
-    {
-      id: 4,
-      name: "Tafeli",
-      logo: b4,
-    },
-    {
-      id: 5,
-      name: "Didian",
-      logo: b5,
-    },
-  ];
-
-  const displayData = activeTab === "companies" ? companies : brands;
+  const displayData = useMemo(
+    () => (activeTab === "companies" ? COMPANIES : BRANDS),
+    [activeTab],
+  );
 
   return (
     <main className="bg-white min-h-screen pb-20 font-sans">

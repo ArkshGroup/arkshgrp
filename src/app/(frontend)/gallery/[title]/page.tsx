@@ -1,4 +1,4 @@
-import GalleryAlbum from "@/components/GalleryAlbum";
+import GalleryCategoryView from "@/components/GalleryCategoryView";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -7,6 +7,10 @@ export const metadata: Metadata = {
     "Explore the photo gallery of Arksh Group, featuring events, projects, and moments that showcase our work and achievements.",
 };
 
-export default function GallerySet() {
-  return <GalleryAlbum />;
+type Props = { params: Promise<{ title: string }> };
+
+export default async function GalleryCategoryPage({ params }: Props) {
+  const { title } = await params;
+  const slug = decodeURIComponent(title);
+  return <GalleryCategoryView slug={slug} />;
 }

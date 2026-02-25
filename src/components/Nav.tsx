@@ -7,8 +7,8 @@ const Nav: React.FC = () => {
   const [openGroups, setOpenGroups] = useState<{ [key: string]: boolean }>({
     communication: true,
     content: true,
-    teams: true,
-    matches: true,
+    career: true,
+    authentication: true,
   })
 
   const toggleGroup = (group: string) => {
@@ -30,12 +30,7 @@ const Nav: React.FC = () => {
           </div>
           {openGroups.communication && (
             <ul className="nav-links">
-              <li>
-                <Link href="/admin/collections/bookings">
-                  <span className="nav-icon">💌</span>
-                  Bookings
-                </Link>
-              </li>
+            
               <li>
                 <Link href="/admin/collections/contacts">
                   <span className="nav-icon">📞</span>
@@ -52,6 +47,12 @@ const Nav: React.FC = () => {
             <span>Media</span>
           </div>
           <ul className="nav-links">
+            <li>
+              <Link href="/admin/collections/categories">
+                <span className="nav-icon">📁</span>
+                Gallery Categories
+              </Link>
+            </li>
             <li>
               <Link href="/admin/collections/gallery">
                 <span className="nav-icon">📸</span>
@@ -110,28 +111,31 @@ const Nav: React.FC = () => {
         </div>
         {/* CAREER */}
         <div className="nav-group">
-          <div className="nav-group-header">
+          <div className="nav-group-header" onClick={() => toggleGroup('career')}>
             <span>Career</span>
+            <span className={`nav-arrow ${openGroups.career ? 'open' : ''}`}>▼</span>
           </div>
-          <ul className="nav-links">
-            <li>
-              <Link href="/admin/collections/careers">
-                <span className="nav-icon">‍‍💻</span>
-                Career
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/collections/applications">
-                <span className="nav-icon">👨‍💻</span>
-                Applications
-              </Link>
-            </li>
-          </ul>
+          {openGroups.career && (
+            <ul className="nav-links">
+              <li>
+                <Link href="/admin/collections/careers">
+                  <span className="nav-icon">‍‍💻</span>
+                  Career
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/collections/applications">
+                  <span className="nav-icon">👨‍💻</span>
+                  Applications
+                </Link>
+              </li>
+            </ul>
+          )}
         </div>
 
         {/* AUTHENTICATION */}
         <div className="nav-group">
-          <div className="nav-group-header">
+          <div className="nav-group-header" onClick={() => toggleGroup('authentication')}>
             <span>Authentication</span>
           </div>
           <ul className="nav-links">

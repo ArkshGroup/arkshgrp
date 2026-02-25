@@ -5,6 +5,7 @@ export const Gallery: CollectionConfig = {
   slug: 'gallery',
   admin: {
     useAsTitle: 'title',
+    group: 'MEDIA',
   },
   access: {
     read: () => true,
@@ -17,16 +18,17 @@ export const Gallery: CollectionConfig = {
     },
     {
       name: 'category',
-      type: 'select',
-      options: ['Events', 'Automobiles', 'Corporate', 'Wellness', 'Award Ceremony'],
+      type: 'relationship',
+      relationTo: 'categories',
       required: true,
+      admin: {
+        description: 'Select a category. Add new categories in the Categories collection.',
+      },
     },
     {
       name: 'year',
       type: 'text',
     },
-
-    // ✅ Multiple Images Field
     {
       name: 'images',
       type: 'array',

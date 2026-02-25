@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Header from '@/components/Header'
 import Footer from '@/components/Footer'
+import ClientLoadGuard from '@/components/ClientLoadGuard'
 
 export const metadata: Metadata = {
   title: 'Arksh Group',
@@ -10,10 +11,10 @@ export const metadata: Metadata = {
 
 export default function FrontendLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <>
+    <ClientLoadGuard>
       <Header />
       <main className="grow">{children}</main>
       <Footer />
-    </>
+    </ClientLoadGuard>
   )
 }

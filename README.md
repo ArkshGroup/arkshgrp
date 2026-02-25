@@ -62,6 +62,17 @@ Alternatively, you can use [Docker](https://www.docker.com) to spin up this temp
 
 That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
 
+## Performance & loading
+
+The frontend is tuned for fast opening and loading:
+
+- **Initial load**: A full-screen loader (logo + spinner) shows until the page is ready, then the site appears.
+- **Code splitting**: Home page sections (About, Arkshism, etc.) are loaded in separate chunks so the first screen paints quickly.
+- **Lightweight loaders**: News, Blog, and Gallery use a small CSS spinner instead of MUI on loading states.
+- **Fonts**: Geist fonts use `display: swap` so text is visible immediately with a fallback while custom fonts load.
+- **Images**: Next.js Image with WebP/AVIF, `sizes` and `priority` where needed (e.g. header logo, hero).
+- **Data**: Parallel API fetches where multiple requests are needed; `useMemo`/`useCallback` to limit re-renders.
+
 ## Questions
 
 If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).

@@ -2,24 +2,31 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { motion, Variants } from 'framer-motion'
+import { useRef, useEffect, useState } from 'react'
 
 export default function Hero() {
-  // Define the variant with the explicit Variants type to satisfy TypeScript
-  const fadeInUp: Variants = {
-    hidden: {
-      opacity: 0,
-      y: 60,
-    },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.8,
-        ease: 'easeOut',
+  const leftRef = useRef<HTMLDivElement>(null)
+  const rightRef = useRef<HTMLDivElement>(null)
+  const [leftInView, setLeftInView] = useState(false)
+  const [rightInView, setRightInView] = useState(false)
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.target === leftRef.current) {
+            if (entry.isIntersecting) setLeftInView(true)
+          } else if (entry.target === rightRef.current) {
+            if (entry.isIntersecting) setRightInView(true)
+          }
+        })
       },
-    },
-  }
+      { threshold: 0.3, rootMargin: '0px' },
+    )
+    if (leftRef.current) observer.observe(leftRef.current)
+    if (rightRef.current) observer.observe(rightRef.current)
+    return () => observer.disconnect()
+  }, [])
 
   return (
     <>
@@ -50,12 +57,9 @@ export default function Hero() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 lg:gap-14 items-center">
             {/* Left Content */}
-            <motion.div
-              className="max-w-xl"
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              variants={fadeInUp}
+            <div
+              ref={leftRef}
+              className={`max-w-xl ${leftInView ? 'animate-fade-in-up' : 'opacity-0'}`}
             >
               <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-5 leading-tight ">
                 Unlocking Boundless Possibilities: Our Multiverse of Success!
@@ -71,15 +75,12 @@ export default function Hero() {
                   Read More
                 </button>
               </Link>
-            </motion.div>
+            </div>
 
             {/* Right Image Card */}
-            <motion.div
-              className="w-full h-65 sm:h-80 md:h-95 lg:h-112 rounded-2xl shadow-2xl overflow-hidden "
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.3 }}
-              variants={fadeInUp} // Reusing the same typed variant
+            <div
+              ref={rightRef}
+              className={`w-full h-65 sm:h-80 md:h-95 lg:h-112 rounded-2xl shadow-2xl overflow-hidden ${rightInView ? 'animate-fade-in-up-delay' : 'opacity-0'}`}
             >
               <div
                 className="w-full h-full bg-cover bg-center"
@@ -88,7 +89,7 @@ export default function Hero() {
                     "url('https://arkshgroup.com/uploads/about/Lumbini-celebrating-45-years-copy.jpg')",
                 }}
               />
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>

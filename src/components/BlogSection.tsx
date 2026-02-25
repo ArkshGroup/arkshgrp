@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
@@ -12,8 +12,21 @@ import {
 } from '@heroicons/react/24/solid'
 import PageBanner from './PageBanner'
 
-import CircularProgress from '@mui/material/CircularProgress'
-import Box from '@mui/material/Box'
+import Spinner from './Spinner'
+
+const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
+const POSTS_PER_PAGE = 6
+
+function getExcerptText(excerpt: unknown): string {
+  if (!excerpt || typeof excerpt !== 'object') return ''
+  const root = (excerpt as { root?: { children?: { children?: { text?: string }[] }[] } }).root
+  if (!root?.children) return ''
+  return root.children
+    .map((node) =>
+      (node.children || []).map((c) => (c && 'text' in c ? c.text : '')).join(''),
+    )
+    .join(' ')
+}
 
 interface BlogCategory {
   id: string
@@ -38,14 +51,11 @@ export default function BlogSection() {
   const [loading, setLoading] = useState(true)
 
   const [currentPage, setCurrentPage] = useState(1)
-  const postsPerPage = 6
 
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/blogs?depth=1&limit=100`,
-        )
+        const res = await fetch(`${PAYLOAD_BASE_URL}/api/blogs?depth=1&limit=100`)
         const data = await res.json()
         setPosts(Array.isArray(data.docs) ? data.docs : [])
       } catch (error) {
@@ -57,15 +67,28 @@ export default function BlogSection() {
     fetchBlogs()
   }, [])
 
-  const indexOfLastPost = currentPage * postsPerPage
-  const indexOfFirstPost = indexOfLastPost - postsPerPage
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost)
-  const totalPages = Math.ceil(posts.length / postsPerPage)
+  const indexOfLastPost = currentPage * POSTS_PER_PAGE
+  const indexOfFirstPost = indexOfLastPost - POSTS_PER_PAGE
+  const currentPosts = useMemo(
+    () => posts.slice(indexOfFirstPost, indexOfLastPost),
+    [posts, indexOfFirstPost, indexOfLastPost],
+  )
+  const totalPages = useMemo(
+    () => Math.ceil(posts.length / POSTS_PER_PAGE),
+    [posts.length],
+  )
+  const pageNumbers = useMemo(
+    () => Array.from({ length: totalPages }, (_, i) => i + 1),
+    [totalPages],
+  )
 
-  const paginate = (pageNumber: number) => {
-    setCurrentPage(pageNumber)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  const paginate = useCallback(
+    (pageNumber: number) => {
+      setCurrentPage(pageNumber)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    },
+    [],
+  )
 
   /* ===================== */
   /* FULL PAGE LOADER     */
@@ -74,9 +97,7 @@ export default function BlogSection() {
   if (loading) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-[#E4F0FD]">
-        <Box>
-          <CircularProgress size={70} thickness={4} sx={{ color: '#3498db' }} />
-        </Box>
+        <Spinner color="#3498db" />
       </main>
     )
   }
@@ -98,7 +119,7 @@ export default function BlogSection() {
         ]}
       />
 
-      <section className="w-full max-w-8xl mx-auto px-3 sm:px-4 md:px-6 py-8 sm:py-9 md:py-10">
+      <section className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-8 sm:py-9 md:py-10">
         {posts.length === 0 ? (
           <p className="text-center text-gray-400 py-20">No blog posts found.</p>
         ) : (
@@ -114,9 +135,10 @@ export default function BlogSection() {
                   >
                     <div className="relative h-48 sm:h-56 md:h-72 lg:h-80 overflow-hidden">
                       <Image
-                        src={`${process.env.NEXT_PUBLIC_PAYLOAD_URL}${post.image.url}`}
+                        src={`${PAYLOAD_BASE_URL}${post.image.url}`}
                         alt={post.title}
                         fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                       />
 
@@ -144,16 +166,7 @@ export default function BlogSection() {
                       </h3>
 
                       <p className="text-[#5d6d7e] text-sm md:text-[15px] leading-relaxed mb-8 line-clamp-3">
-                        {(() => {
-                          if (!post.excerpt) return ''
-                          const text =
-                            post.excerpt?.root?.children
-                              ?.map((node: any) =>
-                                node.children?.map((child: any) => child.text).join(''),
-                              )
-                              .join(' ') || ''
-                          return text
-                        })()}
+                        {getExcerptText(post.excerpt)}
                       </p>
 
                       <div className="mt-auto pt-6 border-t border-gray-50">
@@ -181,7 +194,7 @@ export default function BlogSection() {
                   <ChevronLeftIcon className="w-5 h-5" />
                 </button>
 
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                {pageNumbers.map((number) => (
                   <button
                     key={number}
                     onClick={() => paginate(number)}

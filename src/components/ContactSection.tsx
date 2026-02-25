@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import PageBanner from './PageBanner'
 import {
   HomeIcon,
@@ -16,35 +16,36 @@ import {
 import { HomeIcon as HomeIconSolid } from '@heroicons/react/24/solid'
 import toast, { Toaster } from 'react-hot-toast'
 
-export default function ContactSection() {
-  const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    subject: '',
-    message: '',
-  })
+const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
 
+const INITIAL_FORM = {
+  fullName: '',
+  email: '',
+  phone: '',
+  subject: '',
+  message: '',
+}
+
+export default function ContactSection() {
+  const [formData, setFormData] = useState(INITIAL_FORM)
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>,
-  ) => {
-    const { name, value } = e.target
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }))
-  }
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+      const { name, value } = e.target
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    },
+    [],
+  )
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
     setSuccess(false)
 
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/contacts`, {
+      const res = await fetch(`${PAYLOAD_BASE_URL}/api/contacts`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -61,24 +62,15 @@ export default function ContactSection() {
       if (!res.ok) throw new Error('Submission failed')
 
       setSuccess(true)
-
-      toast.success('Message sent successfully!') // ✅ SUCCESS TOAST
-
-      setFormData({
-        fullName: '',
-        email: '',
-        phone: '',
-        subject: '',
-        message: '',
-      })
+      toast.success('Message sent successfully!')
+      setFormData(INITIAL_FORM)
     } catch (error) {
       console.error('Error submitting form:', error)
-
-      toast.error('Something went wrong. Please try again.') // ✅ ERROR TOAST
+      toast.error('Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }
-  }
+  }, [formData])
 
   return (
     <section>

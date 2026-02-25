@@ -57,12 +57,12 @@ export default function Footer() {
           </h3>
           <ul className="space-y-3">
             {[
-              { name: "Home", path: "/home" },
+              { name: "Home", path: "/" },
               { name: "About Us", path: "/about" },
               { name: "Arkshism", path: "/arkshism" },
               { name: "News", path: "/news" },
               { name: "Gallery", path: "/gallery" },
-              { name: "Careers", path: "career" },
+              { name: "Careers", path: "/career" },
               { name: "Contact", path: "/contact" },
             ].map((link) => (
               <li key={link.name} className="flex items-center gap-2 group">
@@ -95,6 +95,7 @@ export default function Footer() {
                 frameBorder="0"
                 allowFullScreen={true}
                 allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                loading="lazy"
               />
             </div>
           </div>

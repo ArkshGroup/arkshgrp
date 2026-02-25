@@ -68,7 +68,6 @@ export interface Config {
   blocks: {};
   collections: {
     contacts: Contact;
-    bookings: Booking;
     categories: Category;
     media: Media;
     notice: Notice;
@@ -87,7 +86,6 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     contacts: ContactsSelect<false> | ContactsSelect<true>;
-    bookings: BookingsSelect<false> | BookingsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     notice: NoticeSelect<false> | NoticeSelect<true>;
@@ -150,37 +148,8 @@ export interface Contact {
   createdAt: string;
 }
 /**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "bookings".
- */
-export interface Booking {
-  id: string;
-  /**
-   * Auto-generated sequential registration number
-   */
-  registrationNumber?: number | null;
-  name: string;
-  email: string;
-  phone: string;
-  dob: string;
-  age: number;
-  gender: 'male' | 'female' | 'other';
-  address: string;
-  schoolName: string;
-  category: 'first' | 'second' | 'third' | 'fourth';
-  categoryDisplay?: string | null;
-  trainingDaysAndTime?: string | null;
-  tShirtSize: 'xs' | 'small' | 'medium' | 'large' | 'extra-large';
-  transportationNeed: 'yes' | 'no';
-  /**
-   * Required if transportation is needed
-   */
-  dropoffLocation?: string | null;
-  status?: ('paid' | 'unpaid' | 'rejected' | 'pending') | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
+ * Categories for Gallery. Add categories here, then assign them to Gallery items.
+ *
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "categories".
  */
@@ -233,6 +202,9 @@ export interface Blog {
   id: string;
   title: string;
   slug: string;
+  /**
+   * Short summary shown in listings and as fallback when no full content is set.
+   */
   excerpt: {
     root: {
       type: string;
@@ -248,6 +220,24 @@ export interface Blog {
     };
     [k: string]: unknown;
   };
+  /**
+   * Optional full article body. If empty, the excerpt is shown as the main content on the detail page.
+   */
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
   date: string;
   image: string | Media;
   author: string;
@@ -257,6 +247,31 @@ export interface Blog {
         id?: string | null;
       }[]
     | null;
+  /**
+   * Optional. Leave empty to use title/excerpt as default. Used for dynamic meta tags and Open Graph.
+   */
+  seo?: {
+    /**
+     * Browser tab & search title. Defaults to blog title if empty.
+     */
+    metaTitle?: string | null;
+    /**
+     * Used in search results and social cards. Defaults to excerpt if empty.
+     */
+    metaDescription?: string | null;
+    /**
+     * Image for social sharing (Facebook, Twitter, etc.). Defaults to blog image if empty.
+     */
+    ogImage?: (string | null) | Media;
+    /**
+     * Comma-separated keywords for SEO.
+     */
+    keywords?: string | null;
+    /**
+     * Full URL of the canonical page (e.g. https://arkshgroup.com/blog/your-slug). Leave empty to use current URL.
+     */
+    canonicalURL?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -305,10 +320,18 @@ export interface Application {
   name: string;
   email: string;
   phone?: string | null;
+  location?: string | null;
   /**
    * The job title or position they are applying for
    */
   position?: string | null;
+  expectedSalary?: number | null;
+  startDate?: string | null;
+  experience?: string | null;
+  employmentStatus?: ('Employed' | 'Unemployed' | 'Self-employed' | 'Student') | null;
+  hasReferrer?: boolean | null;
+  referrerName?: string | null;
+  referrerEmail?: string | null;
   /**
    * Uploaded CV or resume file
    */
@@ -341,7 +364,10 @@ export interface User {
 export interface Gallery {
   id: string;
   title: string;
-  category: 'Events' | 'Automobiles' | 'Corporate' | 'Wellness' | 'Award Ceremony';
+  /**
+   * Select a category. Add new categories in the Categories collection.
+   */
+  category: string | Category;
   year?: string | null;
   images: {
     image: string | Media;
@@ -396,10 +422,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'contacts';
         value: string | Contact;
-      } | null)
-    | ({
-        relationTo: 'bookings';
-        value: string | Booking;
       } | null)
     | ({
         relationTo: 'categories';
@@ -502,30 +524,6 @@ export interface ContactsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "bookings_select".
- */
-export interface BookingsSelect<T extends boolean = true> {
-  registrationNumber?: T;
-  name?: T;
-  email?: T;
-  phone?: T;
-  dob?: T;
-  age?: T;
-  gender?: T;
-  address?: T;
-  schoolName?: T;
-  category?: T;
-  categoryDisplay?: T;
-  trainingDaysAndTime?: T;
-  tShirtSize?: T;
-  transportationNeed?: T;
-  dropoffLocation?: T;
-  status?: T;
-  updatedAt?: T;
-  createdAt?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "categories_select".
  */
 export interface CategoriesSelect<T extends boolean = true> {
@@ -571,6 +569,7 @@ export interface BlogsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   excerpt?: T;
+  content?: T;
   date?: T;
   image?: T;
   author?: T;
@@ -579,6 +578,15 @@ export interface BlogsSelect<T extends boolean = true> {
     | {
         category?: T;
         id?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        keywords?: T;
+        canonicalURL?: T;
       };
   updatedAt?: T;
   createdAt?: T;
@@ -608,7 +616,15 @@ export interface ApplicationsSelect<T extends boolean = true> {
   name?: T;
   email?: T;
   phone?: T;
+  location?: T;
   position?: T;
+  expectedSalary?: T;
+  startDate?: T;
+  experience?: T;
+  employmentStatus?: T;
+  hasReferrer?: T;
+  referrerName?: T;
+  referrerEmail?: T;
   cv?: T;
   updatedAt?: T;
   createdAt?: T;

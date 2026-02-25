@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import {
@@ -8,16 +8,35 @@ import {
   CalendarIcon,
   ChevronRightIcon,
   ChevronLeftIcon,
+  PlayIcon,
 } from '@heroicons/react/24/solid'
 
 import { Swiper, SwiperSlide } from 'swiper/react'
 import { Autoplay, Navigation } from 'swiper/modules'
 
-import CircularProgress from '@mui/material/CircularProgress'
-import Box from '@mui/material/Box'
+import Spinner from './Spinner'
 
 import 'swiper/css'
 import 'swiper/css/navigation'
+
+/* ---------------- CONSTANTS ---------------- */
+
+const NEWS_PER_PAGE = 6
+const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
+const SWIPER_MODULES = [Autoplay, Navigation]
+const SWIPER_BREAKPOINTS = {
+  0: { slidesPerView: 1 },
+  640: { slidesPerView: 2 },
+  1024: { slidesPerView: 3 },
+} as const
+
+/* ---------------- HELPERS ---------------- */
+
+function getYouTubeId(url: string): string | null {
+  const regExp = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
+  const match = url.match(regExp)
+  return match ? match[1] : null
+}
 
 /* ---------------- TYPES ---------------- */
 
@@ -26,9 +45,7 @@ interface NewsArticle {
   title: string
   excerpt: string
   link: string
-  image: {
-    url: string
-  }
+  image?: { url?: string } | null
   date: string
 }
 
@@ -48,28 +65,21 @@ export default function NewsRoom() {
   const [ceoCorner, setCeoCorner] = useState<YoutubeNews[]>([])
 
   const [currentPage, setCurrentPage] = useState(1)
-  const newsPerPage = 6
 
   useEffect(() => {
     const fetchAllData = async () => {
       try {
-        // Fetch News
-        const newsRes = await fetch(
-          `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/news?sort=-publishedDate&limit=100`,
-        )
-        const newsData = await newsRes.json()
+        const [newsRes, chairmanRes, ceoRes] = await Promise.all([
+          fetch(`${PAYLOAD_BASE_URL}/api/news?sort=-date&limit=100&depth=1`),
+          fetch(`${PAYLOAD_BASE_URL}/api/youtube-news?where[cornerType][equals]=chairman&sort=order`),
+          fetch(`${PAYLOAD_BASE_URL}/api/youtube-news?where[cornerType][equals]=ceo&sort=order`),
+        ])
 
-        // Fetch Chairman
-        const chairmanRes = await fetch(
-          `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/youtube-news?where[cornerType][equals]=chairman&sort=order`,
-        )
-        const chairmanData = await chairmanRes.json()
-
-        // Fetch CEO
-        const ceoRes = await fetch(
-          `${process.env.NEXT_PUBLIC_PAYLOAD_URL}/api/youtube-news?where[cornerType][equals]=ceo&sort=order`,
-        )
-        const ceoData = await ceoRes.json()
+        const [newsData, chairmanData, ceoData] = await Promise.all([
+          newsRes.json(),
+          chairmanRes.json(),
+          ceoRes.json(),
+        ])
 
         setNewsArticles(Array.isArray(newsData.docs) ? newsData.docs : [])
         setChairmanCorner(Array.isArray(chairmanData.docs) ? chairmanData.docs : [])
@@ -84,31 +94,37 @@ export default function NewsRoom() {
     fetchAllData()
   }, [])
 
-  const indexOfLastNews = currentPage * newsPerPage
-  const indexOfFirstNews = indexOfLastNews - newsPerPage
-  const currentNews = newsArticles.slice(indexOfFirstNews, indexOfLastNews)
-  const totalPages = Math.ceil(newsArticles.length / newsPerPage)
+  const indexOfLastNews = currentPage * NEWS_PER_PAGE
+  const indexOfFirstNews = indexOfLastNews - NEWS_PER_PAGE
+  const currentNews = useMemo(
+    () => newsArticles.slice(indexOfFirstNews, indexOfLastNews),
+    [newsArticles, indexOfFirstNews, indexOfLastNews],
+  )
+  const totalPages = useMemo(
+    () => Math.ceil(newsArticles.length / NEWS_PER_PAGE),
+    [newsArticles.length],
+  )
 
-  const paginate = (pageNumber: number) => {
-    if (pageNumber < 1 || pageNumber > totalPages) return
-    setCurrentPage(pageNumber)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }
+  const paginate = useCallback(
+    (pageNumber: number) => {
+      if (pageNumber < 1 || pageNumber > totalPages) return
+      setCurrentPage(pageNumber)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    },
+    [totalPages],
+  )
 
-  const getYouTubeId = (url: string) => {
-    const regExp = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
-    const match = url.match(regExp)
-    return match ? match[1] : null
-  }
+  const pageNumbers = useMemo(
+    () => Array.from({ length: totalPages }, (_, i) => i + 1),
+    [totalPages],
+  )
 
   /* FULL PAGE LOADER     */
 
   if (loading) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-[#eef3f8]">
-        <Box>
-          <CircularProgress size={70} thickness={4} sx={{ color: '#1E73BE' }} />
-        </Box>
+        <Spinner color="#1E73BE" />
       </main>
     )
   }
@@ -142,14 +158,13 @@ export default function NewsRoom() {
         </div>
       </section>
 
-      {/* CHAIRMAN CORNER */}
-      {/* CHAIRMAN CORNER */}
-      <section className="py-18">
-        <div className="w-full max-w-8xl mx-auto px-4 relative">
+      {/* CHAIRMAN'S CORNER */}
+      <section className="py-12 md:py-16">
+        <div className="w-full max-w-7xl mx-auto px-4 relative">
           <SectionTitle title="Chairman's Corner" />
 
           <Swiper
-            modules={[Autoplay, Navigation]}
+            modules={SWIPER_MODULES}
             spaceBetween={20}
             slidesPerView={3}
             autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -158,36 +173,40 @@ export default function NewsRoom() {
               nextEl: '#chairman-next',
             }}
             loop={chairmanCorner.length > 3}
-            breakpoints={{
-              0: { slidesPerView: 1 },
-              640: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
-            }}
+            breakpoints={SWIPER_BREAKPOINTS}
           >
-            {chairmanCorner.map((item) => {
+            {chairmanCorner.map((item, index) => {
               const videoId = getYouTubeId(item.youtubeUrl)
-              const thumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : ''
-
+              const thumbnailUrl = videoId
+                ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                : null
               return (
                 <SwiperSlide key={item.id}>
                   <a
                     href={item.youtubeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition block"
+                    className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
                   >
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={thumbnail}
-                        alt="Chairman Video"
-                        className="w-full h-72 object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-
-                      {/* Play Overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <div className="bg-[#1D8AD2] rounded-full p-4 shadow-lg text-white text-xl transform scale-75 transition-transform duration-300 group-hover:scale-100">
-                          ▶
+                    <div className="relative w-full min-h-80 aspect-4/3 overflow-hidden bg-gray-900 sm:min-h-96 md:min-h-112">
+                      {thumbnailUrl ? (
+                        <Image
+                          src={thumbnailUrl}
+                          alt="Chairman's Corner Video"
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          priority={index === 0}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
+                          No thumbnail
                         </div>
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1D8AD2] text-white shadow-xl ring-4 ring-white/30 transition-transform duration-300 group-hover:scale-110">
+                          <PlayIcon className="h-7 w-7 ml-0.5" aria-hidden />
+                        </span>
                       </div>
                     </div>
                   </a>
@@ -199,34 +218,30 @@ export default function NewsRoom() {
           {/* Navigation Buttons */}
           <button
             id="chairman-prev"
-            className="absolute left-0 top-65 -translate-y-1/2 z-20 
-                 bg-white/55 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl 
-                 text-[#1E73BE] hover:text-white 
-                 transition-all duration-300 ml-4"
+            type="button"
+            aria-label="Previous"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 ml-2 md:ml-4"
           >
             <ChevronLeftIcon className="w-6 h-6" />
           </button>
-
           <button
             id="chairman-next"
-            className="absolute right-0 top-65 -translate-y-1/2 z-20 
-                 bg-white/55 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl 
-                 text-[#1E73BE] hover:text-white 
-                 transition-all duration-300 mr-4"
+            type="button"
+            aria-label="Next"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 mr-2 md:mr-4"
           >
             <ChevronRightIcon className="w-6 h-6" />
           </button>
         </div>
       </section>
 
-      {/* CEO CORNER */}
-      {/* CEO CORNER */}
-      <section className="py-15">
-        <div className="w-full max-w-8xl mx-auto px-4 relative">
+      {/* CEO'S CORNER */}
+      <section className="py-12 md:py-16">
+        <div className="w-full max-w-7xl mx-auto px-4 relative">
           <SectionTitle title="CEO's Corner" />
 
           <Swiper
-            modules={[Autoplay, Navigation]}
+            modules={SWIPER_MODULES}
             spaceBetween={20}
             slidesPerView={3}
             autoplay={{ delay: 3000, disableOnInteraction: false }}
@@ -235,36 +250,40 @@ export default function NewsRoom() {
               nextEl: '#ceo-next',
             }}
             loop={ceoCorner.length > 3}
-            breakpoints={{
-              0: { slidesPerView: 1 },
-              640: { slidesPerView: 2 },
-              1024: { slidesPerView: 3 },
-            }}
+            breakpoints={SWIPER_BREAKPOINTS}
           >
-            {ceoCorner.map((item) => {
+            {ceoCorner.map((item, index) => {
               const videoId = getYouTubeId(item.youtubeUrl)
-              const thumbnail = videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : ''
-
+              const thumbnailUrl = videoId
+                ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                : null
               return (
                 <SwiperSlide key={item.id}>
                   <a
                     href={item.youtubeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition block"
+                    className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
                   >
-                    <div className="relative overflow-hidden">
-                      <img
-                        src={thumbnail}
-                        alt="CEO Video"
-                        className="w-full h-72 object-cover transition-transform duration-700 group-hover:scale-110"
-                      />
-
-                      {/* Play Overlay */}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                        <div className="bg-[#1D8AD2] rounded-full p-4 shadow-lg text-white text-xl transform scale-75 transition-transform duration-300 group-hover:scale-100">
-                          ▶
+                    <div className="relative w-full min-h-80 aspect-4/3 overflow-hidden bg-gray-900 sm:min-h-96 md:min-h-112">
+                      {thumbnailUrl ? (
+                        <Image
+                          src={thumbnailUrl}
+                          alt="CEO's Corner Video"
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          className="object-cover transition-transform duration-500 group-hover:scale-105"
+                          priority={index === 0}
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
+                          No thumbnail
                         </div>
+                      )}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1D8AD2] text-white shadow-xl ring-4 ring-white/30 transition-transform duration-300 group-hover:scale-110">
+                          <PlayIcon className="h-7 w-7 ml-0.5" aria-hidden />
+                        </span>
                       </div>
                     </div>
                   </a>
@@ -276,65 +295,77 @@ export default function NewsRoom() {
           {/* Navigation Buttons */}
           <button
             id="ceo-prev"
-            className="absolute left-0 top-65 -translate-y-1/2 z-20 
-                 bg-white/55 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl 
-                 text-[#1E73BE] hover:text-white 
-                 transition-all duration-300 ml-4"
+            type="button"
+            aria-label="Previous"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 ml-2 md:ml-4"
           >
             <ChevronLeftIcon className="w-6 h-6" />
           </button>
-
           <button
             id="ceo-next"
-            className="absolute right-0 top-65 -translate-y-1/2 z-20 
-                 bg-white/55 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl 
-                 text-[#1E73BE] hover:text-white 
-                 transition-all duration-300 mr-4"
+            type="button"
+            aria-label="Next"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 mr-2 md:mr-4"
           >
             <ChevronRightIcon className="w-6 h-6" />
           </button>
         </div>
       </section>
       {/* NEWS GRID */}
-      <section className="w-full max-w-8xl mx-auto px-4 py-20">
+      <section className="w-full max-w-7xl mx-auto px-4 py-20">
         <SectionTitle title="Latest News & Updates" />
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {currentNews.map((article) => (
+          {currentNews.map((article) => {
+            const imageUrl =
+              article.image && typeof article.image === 'object' && article.image?.url
+                ? `${PAYLOAD_BASE_URL}${article.image.url}`
+                : null
+            return (
             <Link
               key={article.id}
               href={article.link}
               target="_blank"
-              className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 shadow hover:shadow-xl transition-all duration-500"
+              rel="noopener noreferrer"
+              className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300"
             >
-              <div className="relative h-64 overflow-hidden">
-                <Image
-                  src={article.image?.url}
-                  alt={article.title}
-                  fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-700"
-                />
+              {/* Image container: larger aspect for bigger image */}
+              <div className="relative w-full min-h-64 aspect-4/3 sm:min-h-72 overflow-hidden bg-gray-100">
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt={article.title}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-sm">
+                    No image
+                  </div>
+                )}
               </div>
 
-              <div className="p-8 flex flex-col flex-1">
-                <div className="flex items-center gap-2 text-gray-400 text-sm mb-4">
-                  <CalendarIcon className="w-4 h-4 text-[#3498db]" />
+              <div className="p-6 sm:p-8 flex flex-col flex-1">
+                <div className="flex items-center gap-2 text-gray-400 text-sm mb-3">
+                  <CalendarIcon className="w-4 h-4 text-[#3498db] shrink-0" />
                   {new Date(article.date).toLocaleDateString()}
                 </div>
 
-                <h3 className="text-lg font-bold text-[#2c3e50] mb-4 group-hover:text-[#3498db] transition">
+                <h3 className="text-lg font-bold text-[#2c3e50] mb-3 group-hover:text-[#3498db] transition-colors line-clamp-2">
                   {article.title}
                 </h3>
 
-                <p className="text-[#5d6d7e] text-sm mb-6 line-clamp-3">{article.excerpt}</p>
+                <p className="text-[#5d6d7e] text-sm mb-5 line-clamp-3 flex-1">{article.excerpt}</p>
 
-                <div className="mt-auto inline-flex items-center gap-1 text-[#3498db] font-bold text-xs uppercase">
+                <span className="inline-flex items-center gap-1 text-[#3498db] font-bold text-xs uppercase">
                   Read More
                   <ChevronRightIcon className="w-4 h-4" />
-                </div>
+                </span>
               </div>
             </Link>
-          ))}
+            );
+          })}
         </div>
 
         {totalPages > 1 && (
@@ -347,7 +378,7 @@ export default function NewsRoom() {
               <ChevronLeftIcon className="w-5 h-5" />
             </button>
 
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+            {pageNumbers.map((number) => (
               <button
                 key={number}
                 onClick={() => paginate(number)}
@@ -375,13 +406,13 @@ export default function NewsRoom() {
   )
 }
 
-/* ---------------- SECTION TITLE ---------------- */
+/* ---------------- SECTION TITLE (memoized) ---------------- */
 
-function SectionTitle({ title }: { title: string }) {
+const SectionTitle = React.memo(function SectionTitle({ title }: { title: string }) {
   return (
     <div className="text-center mb-14">
       <h2 className="text-3xl md:text-4xl font-bold text-[#1E73BE]">{title}</h2>
       <div className="w-16 h-1 bg-[#3498db] mx-auto mt-4 rounded-full"></div>
     </div>
   )
-}
+})

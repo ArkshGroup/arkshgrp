@@ -18,6 +18,28 @@ import {
 import Link from 'next/link'
 import PageBanner from './PageBanner'
 
+const MISSION_ITEMS = [
+  { title: 'Sustainable Growths', desc: 'To become sustainably-growing business group through carefully planned strategies.' },
+  { title: 'Customer Value', desc: 'To create optimum value for our customers by understanding and exceeding their expectations.' },
+  { title: 'Employer of Choice', desc: "To become 'Employer of Choice' by providing growth opportunities and work-life balance." },
+  { title: 'Equal Opportunities', desc: 'To provide equal opportunities regardless of age, caste, gender, race, and religion.' },
+  { title: 'Community Support', desc: 'To empower communities by providing support and opportunities that unite society.' },
+  { title: 'Business Excellence', desc: 'To uphold the highest standards of integrity, quality, service, innovation, and excellence.' },
+] as const
+
+const CORE_VALUES = [
+  { label: 'Accountability', icon: CheckCircleIcon, desc: 'Taking responsibility for our actions and decisions' },
+  { label: 'Determination', icon: ArrowTrendingUpIcon, desc: 'Pursuing our goals with unwavering resolve' },
+  { label: 'Discipline', icon: ClockIcon, desc: 'Maintaining high standards in all we do' },
+  { label: 'Equality', icon: ScaleIcon, desc: 'Treating everyone with fairness and respect' },
+  { label: 'Hard-Work', icon: WrenchIcon, desc: 'Putting in our best effort in everything we do' },
+  { label: 'Helpfulness', icon: HandRaisedIcon, desc: 'Supporting others in their journey to success' },
+  { label: 'Honesty', icon: HeartIcon, desc: 'Being truthful and transparent in all our dealings' },
+  { label: 'Kindness', icon: SparklesIcon, desc: 'Showing compassion and care in our interactions' },
+  { label: 'Respect', icon: HandThumbUpIcon, desc: 'Valuing and honoring the dignity of all' },
+  { label: 'Trust', icon: ShieldCheckIcon, desc: 'Building reliable and lasting relationships' },
+] as const
+
 export default function AboutSection() {
   return (
     <main className="bg-white font-sans">
@@ -142,32 +164,7 @@ export default function AboutSection() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[
-                {
-                  title: 'Sustainable Growths',
-                  desc: 'To become sustainably-growing business group through carefully planned strategies.',
-                },
-                {
-                  title: 'Customer Value',
-                  desc: 'To create optimum value for our customers by understanding and exceeding their expectations.',
-                },
-                {
-                  title: 'Employer of Choice',
-                  desc: "To become 'Employer of Choice' by providing growth opportunities and work-life balance.",
-                },
-                {
-                  title: 'Equal Opportunities',
-                  desc: 'To provide equal opportunities regardless of age, caste, gender, race, and religion.',
-                },
-                {
-                  title: 'Community Support',
-                  desc: 'To empower communities by providing support and opportunities that unite society.',
-                },
-                {
-                  title: 'Business Excellence',
-                  desc: 'To uphold the highest standards of integrity, quality, service, innovation, and excellence.',
-                },
-              ].map((item, idx) => (
+              {MISSION_ITEMS.map((item, idx) => (
                 <div
                   key={idx}
                   className="bg-white p-8 rounded-2xl border-t-2 border-[#3498db] shadow-sm text-left
@@ -203,69 +200,21 @@ export default function AboutSection() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[
-              {
-                label: 'Accountability',
-                icon: <CheckCircleIcon />,
-                desc: 'Taking responsibility for our actions and decisions',
-              },
-              {
-                label: 'Determination',
-                icon: <ArrowTrendingUpIcon />,
-                desc: 'Pursuing our goals with unwavering resolve',
-              },
-              {
-                label: 'Discipline',
-                icon: <ClockIcon />,
-                desc: 'Maintaining high standards in all we do',
-              },
-              {
-                label: 'Equality',
-                icon: <ScaleIcon />,
-                desc: 'Treating everyone with fairness and respect',
-              },
-              {
-                label: 'Hard-Work',
-                icon: <WrenchIcon />,
-                desc: 'Putting in our best effort in everything we do',
-              },
-              {
-                label: 'Helpfulness',
-                icon: <HandRaisedIcon />,
-                desc: 'Supporting others in their journey to success',
-              },
-              {
-                label: 'Honesty',
-                icon: <HeartIcon />,
-                desc: 'Being truthful and transparent in all our dealings',
-              },
-              {
-                label: 'Kindness',
-                icon: <SparklesIcon />,
-                desc: 'Showing compassion and care in our interactions',
-              },
-              {
-                label: 'Respect',
-                icon: <HandThumbUpIcon />,
-                desc: 'Valuing and honoring the dignity of all',
-              },
-              {
-                label: 'Trust',
-                icon: <ShieldCheckIcon />,
-                desc: 'Building reliable and lasting relationships',
-              },
-            ].map((value, idx) => (
+            {CORE_VALUES.map((value, idx) => {
+              const Icon = value.icon
+              return (
               <div
                 key={idx}
                 className="bg-white p-8 rounded-3xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col items-center group"
               >
                 <div className="bg-blue-50 text-[#3498db] p-4 rounded-full mb-6 w-20 h-20 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <div className="w-10 h-10">{value.icon}</div>
+                  <Icon className="w-10 h-10" />
                 </div>
                 <h4 className="text-2xl font-bold text-[#2c3e50] mb-3">{value.label}</h4>
                 <p className="text-gray-400 text-sm leading-relaxed px-2">{value.desc}</p>
               </div>
-            ))}
+              )
+            })}
           </div>
         </div>
       </section>

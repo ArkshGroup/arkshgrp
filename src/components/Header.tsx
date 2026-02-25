@@ -53,7 +53,7 @@ export default function Header() {
       setLastScroll(currentScroll)
     }
 
-    window.addEventListener('scroll', handleScroll)
+    window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [lastScroll])
 
@@ -143,8 +143,15 @@ export default function Header() {
             : 'bg-white'
         }`}
       >
-        <Link href="/" className="relative h-18 w-18 md:h-20 md:w-20">
-          <Image src={logo} alt="Arksh Group Logo" fill className="object-contain" priority />
+        <Link href="/" className="relative h-18 w-18 md:h-20 md:w-20 block">
+          <Image
+            src={logo}
+            alt="Arksh Group Logo"
+            fill
+            className="object-contain"
+            priority
+            sizes="(max-width: 1024px) 72px, 80px"
+          />
         </Link>
 
         {/* Desktop Menu */}

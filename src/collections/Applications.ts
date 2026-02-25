@@ -42,6 +42,12 @@ const Applications: CollectionConfig = {
       label: 'Phone Number',
     },
     {
+      name: 'location',
+      type: 'text',
+      required: false,
+      label: 'Location',
+    },
+    {
       name: 'position',
       type: 'text',
       required: false,
@@ -49,6 +55,54 @@ const Applications: CollectionConfig = {
       admin: {
         description: 'The job title or position they are applying for',
       },
+    },
+    {
+      name: 'expectedSalary',
+      type: 'number',
+      required: false,
+      label: 'Expected Salary',
+    },
+    {
+      name: 'startDate',
+      type: 'date',
+      required: false,
+      label: 'Available Start Date',
+    },
+    {
+      name: 'experience',
+      type: 'text',
+      required: false,
+      label: 'Years of Experience',
+    },
+    {
+      name: 'employmentStatus',
+      type: 'select',
+      required: false,
+      label: 'Employment Status',
+      options: [
+        'Employed',
+        'Unemployed',
+        'Self-employed',
+        'Student',
+      ],
+    },
+    {
+      name: 'hasReferrer',
+      type: 'checkbox',
+      required: false,
+      label: 'Has Referrer',
+    },
+    {
+      name: 'referrerName',
+      type: 'text',
+      required: false,
+      label: 'Referrer Name',
+    },
+    {
+      name: 'referrerEmail',
+      type: 'email',
+      required: false,
+      label: 'Referrer Email',
     },
     {
       name: 'cv',

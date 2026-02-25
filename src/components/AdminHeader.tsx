@@ -40,8 +40,8 @@ const Header = () => {
       <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
         <Link href="/admin">
           <Image
-            src="/hpc.jpeg"
-            alt="Hotel Peaceeland Logo"
+            src="/logo.jpg"
+            alt="Arksh Group Logo"
             width={100}
             height={50}
             style={{ height: '50px', width: 'auto' }}

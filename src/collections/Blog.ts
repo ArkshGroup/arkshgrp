@@ -49,6 +49,17 @@ const Blog: CollectionConfig = {
       name: 'excerpt',
       type: 'richText',
       required: true,
+      admin: {
+        description: 'Short summary shown in listings and as fallback when no full content is set.',
+      },
+    },
+
+    {
+      name: 'content',
+      type: 'richText',
+      admin: {
+        description: 'Optional full article body. If empty, the excerpt is shown as the main content on the detail page.',
+      },
     },
 
     {
@@ -83,6 +94,59 @@ const Blog: CollectionConfig = {
           name: 'category',
           type: 'text',
           required: true,
+        },
+      ],
+    },
+
+    // ——— SEO (dynamic per post) ———
+    {
+      name: 'seo',
+      type: 'group',
+      label: 'SEO',
+      admin: {
+        description: 'Optional. Leave empty to use title/excerpt as default. Used for dynamic meta tags and Open Graph.',
+      },
+      fields: [
+        {
+          name: 'metaTitle',
+          type: 'text',
+          label: 'Meta Title',
+          admin: {
+            description: 'Browser tab & search title. Defaults to blog title if empty.',
+          },
+        },
+        {
+          name: 'metaDescription',
+          type: 'textarea',
+          label: 'Meta Description',
+          admin: {
+            description: 'Used in search results and social cards. Defaults to excerpt if empty.',
+          },
+        },
+        {
+          name: 'ogImage',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'OG / Social Image',
+          admin: {
+            description: 'Image for social sharing (Facebook, Twitter, etc.). Defaults to blog image if empty.',
+          },
+        },
+        {
+          name: 'keywords',
+          type: 'text',
+          label: 'Meta Keywords',
+          admin: {
+            description: 'Comma-separated keywords for SEO.',
+          },
+        },
+        {
+          name: 'canonicalURL',
+          type: 'text',
+          label: 'Canonical URL',
+          admin: {
+            description: 'Full URL of the canonical page (e.g. https://arkshgroup.com/blog/your-slug). Leave empty to use current URL.',
+          },
         },
       ],
     },

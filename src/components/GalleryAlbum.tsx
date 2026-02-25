@@ -5,18 +5,7 @@ import { HomeIcon } from "@heroicons/react/24/solid";
 import Image from "next/image";
 import { galleryData } from "@/constant/gallery.data";
 import PageBanner from "@/components/PageBanner";
-
-// Lightbox Core
-import Lightbox from "yet-another-react-lightbox";
-import "yet-another-react-lightbox/styles.css";
-
-// Lightbox Plugins
-import Zoom from "yet-another-react-lightbox/plugins/zoom";
-import Download from "yet-another-react-lightbox/plugins/download";
-import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
-import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
-import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
-import "yet-another-react-lightbox/plugins/thumbnails.css";
+import LightboxLazy from "@/components/LightboxLazy";
 
 export default function GalleryAlbum() {
   const [index, setIndex] = useState(-1);
@@ -67,15 +56,12 @@ export default function GalleryAlbum() {
         </div>
       </section>
 
-      <Lightbox
-        index={index}
+      <LightboxLazy
         open={index >= 0}
-        close={() => setIndex(-1)}
+        index={index}
+        onClose={() => setIndex(-1)}
         slides={slides}
-        // Add plugins here
-        plugins={[Zoom, Download, Slideshow, Fullscreen, Thumbnails]}
-        // Optional: Plugin configurations
-        zoom={{ maxZoomPixelRatio: 3 }}
+        pluginSet="full"
         slideshow={{ autoplay: false, delay: 3000 }}
       />
     </main>
