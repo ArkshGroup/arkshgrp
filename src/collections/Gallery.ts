@@ -25,11 +25,25 @@ export const Gallery: CollectionConfig = {
       name: 'year',
       type: 'text',
     },
+
+    // ✅ Multiple Images Field
     {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
+      name: 'images',
+      type: 'array',
       required: true,
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+        },
+        {
+          name: 'alt',
+          type: 'text',
+          label: 'Alt Text',
+        },
+      ],
     },
   ],
 }

@@ -343,7 +343,11 @@ export interface Gallery {
   title: string;
   category: 'Events' | 'Automobiles' | 'Corporate' | 'Wellness' | 'Award Ceremony';
   year?: string | null;
-  image: string | Media;
+  images: {
+    image: string | Media;
+    alt?: string | null;
+    id?: string | null;
+  }[];
   updatedAt: string;
   createdAt: string;
 }
@@ -634,7 +638,13 @@ export interface GallerySelect<T extends boolean = true> {
   title?: T;
   category?: T;
   year?: T;
-  image?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        alt?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
