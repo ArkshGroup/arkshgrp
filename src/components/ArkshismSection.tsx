@@ -28,20 +28,33 @@ export default function ArkshismSection() {
       />
       <div className="max-w-7xl mx-auto px-6 pt-16">
         {/* 2. Philosophy Hero Card */}
-        <div className="bg-[#3498db] rounded-[30px] p-12 text-center text-white shadow-xl mb-16 relative">
+        <div
+          className="group bg-[#3498db] rounded-[30px] p-12 text-center text-white 
+             shadow-xl mb-16 relative 
+             transition-all duration-500 ease-out
+             hover:-translate-y-3 hover:shadow-2xl hover:scale-[1.02]"
+        >
           <div className="flex flex-col items-center gap-4">
-            <div className="bg-white p-4 rounded-full shadow-lg">
+            <div
+              className="bg-white p-4 rounded-full shadow-lg
+                 transition-all duration-500
+                 group-hover:scale-110 group-hover:rotate-6"
+            >
               <LightBulbIcon className="w-12 h-12 text-[#3498db]" />
             </div>
-            <h2 className="text-4xl font-bold">Arkshism</h2>
-            <div className="w-16 h-1 bg-white/50 rounded-full my-2"></div>
-            <p className="max-w-3xl text-lg leading-relaxed font-medium">
+
+            <h2 className="text-4xl font-bold transition-all duration-300 group-hover:tracking-wide">
+              Arkshism
+            </h2>
+
+            <div className="w-16 h-1 bg-white/50 rounded-full my-2 transition-all duration-300 group-hover:w-24"></div>
+
+            <p className="max-w-3xl text-lg leading-relaxed font-medium transition-opacity duration-300 group-hover:opacity-95">
               The guiding philosophy behind this identity and visual representation of logo is known
               as Arkshism, a concept rooted in aspiration and stellar excellence.
             </p>
           </div>
         </div>
-
         {/* 3. Three Pillars Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-24">
           <PillarCard
@@ -62,19 +75,32 @@ export default function ArkshismSection() {
         </div>
 
         {/* 4. Meaning Behind Our Logo (English) */}
-        <section className="mb-24">
+        <section className="mb-24 ">
           <SectionHeader title="Meaning Behind Our Logo" />
           <div className="flex justify-center mb-12">
-            <Image
-              src={logo2}
-              alt="Arksh Logo"
-              className="h-50 object-contain p-4 border border-gray-100 rounded-2xl shadow-sm transition-shadow duration-300 
-             hover:rotate-3 hover:shadow-[0_10px_20px_rgba(52,152,219,0.4)]"
-            />
+            <div className="group transition-all duration-500 ease-out">
+              <Image
+                src={logo2}
+                alt="Arksh Logo"
+                className="h-50 object-contain p-4 border border-gray-100 rounded-2xl shadow-sm 
+                 transition-all duration-500 ease-out
+                 group-hover:-translate-y-3 
+                 group-hover:rotate-2
+                 group-hover:shadow-[0_20px_40px_rgba(52,152,219,0.35)]
+                 group-hover:scale-[1.03]"
+              />
+            </div>
           </div>
+
           <p
-            className="text-center text-gray-600 text-[18px] mb-12 max-w-2xl mx-auto border border-gray-100 py-6 px-10 rounded-2xl shadow-blue-300 border-t-blue-500 
-              transition-shadow duration-300 hover:-translate-y-2 hover:shadow-lg"
+            className="text-center text-gray-600 text-[18px] mb-12 max-w-2xl mx-auto 
+             border border-gray-100 py-6 px-10 rounded-2xl 
+             border-t-blue-500 bg-white
+             shadow-sm
+             transition-all duration-500 ease-out
+             hover:-translate-y-3
+             hover:shadow-[0_15px_35px_rgba(52,152,219,0.25)]
+             hover:scale-[1.02]"
           >
             The logo comprises stars, a person, and lines, with each element and color conveying a
             specific meaning.
@@ -113,16 +139,29 @@ export default function ArkshismSection() {
         <section>
           <SectionHeader title="अर्कश ग्रुपको लोगोले के चित्रण गर्दछ ?" />
           <div className="flex justify-center mb-12">
-            <Image
-              src={logo2}
-              alt="Arksh Logo"
-              className="h-50 object-contain p-4 border border-gray-100 rounded-2xl shadow-sm transition-shadow duration-300 
-             hover:rotate-3 hover:shadow-[0_10px_20px_rgba(52,152,219,0.4)]"
-            />
+            <div className="group transition-all duration-500 ease-out">
+              <Image
+                src={logo2}
+                alt="Arksh Logo"
+                className="h-50 object-contain p-4 border border-gray-100 rounded-2xl shadow-sm 
+                 transition-all duration-500 ease-out
+                 group-hover:-translate-y-3 
+                 group-hover:rotate-2
+                 group-hover:shadow-[0_20px_40px_rgba(52,152,219,0.35)]
+                 group-hover:scale-[1.03]"
+              />
+            </div>
           </div>
+
           <p
-            className="text-center text-gray-600 text-[18px] mb-12 max-w-2xl mx-auto border border-gray-100 py-6 px-10 rounded-2xl shadow-blue-300 border-t-blue-500 
-              transition-shadow duration-300 hover:-translate-y-2 hover:shadow-lg"
+            className="text-center text-gray-600 text-[18px] mb-12 max-w-2xl mx-auto 
+             border border-gray-100 py-6 px-10 rounded-2xl 
+             border-t-blue-500 bg-white
+             shadow-sm
+             transition-all duration-500 ease-out
+             hover:-translate-y-3
+             hover:shadow-[0_15px_35px_rgba(52,152,219,0.25)]
+             hover:scale-[1.02]"
           >
             लोगोमा ताराहरू, एक व्यक्ति र रेखाहरू समावेश भएका छन्, जसका प्रत्येक तत्व र रङले विशेष
             अर्थको अनुरूप बुझाउँछ, जसलाई पूर्ण रूपमा तल व्याख्या गरिएको छ।

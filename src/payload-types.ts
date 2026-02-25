@@ -345,7 +345,6 @@ export interface Gallery {
   year?: string | null;
   images: {
     image: string | Media;
-    alt?: string | null;
     id?: string | null;
   }[];
   updatedAt: string;
@@ -642,7 +641,6 @@ export interface GallerySelect<T extends boolean = true> {
     | T
     | {
         image?: T;
-        alt?: T;
         id?: T;
       };
   updatedAt?: T;

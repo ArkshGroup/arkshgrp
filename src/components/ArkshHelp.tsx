@@ -1,48 +1,48 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import Image from "next/image";
-import { HomeIcon, CalendarIcon } from "@heroicons/react/24/solid";
-import PageBanner from "@/components/PageBanner";
-import { blogPosts2 } from "@/constant/blogs";
-import Link from "next/link";
+import React, { useState } from 'react'
+import Image from 'next/image'
+import { HomeIcon, CalendarIcon } from '@heroicons/react/24/solid'
+import PageBanner from '@/components/PageBanner'
+import { blogPosts2 } from '@/constant/blogs'
+import Link from 'next/link'
 
 export default function ArkshHelps() {
   const [activeVideo, setActiveVideo] = useState<{
-    url: string;
-    type: string;
-  } | null>(null);
+    url: string
+    type: string
+  } | null>(null)
 
   const videos = [
     {
       id: 1,
-      type: "youtube",
-      url: "https://www.youtube.com/embed/pf4TcOifDlI",
+      type: 'youtube',
+      url: 'https://www.youtube.com/embed/pf4TcOifDlI',
     },
     {
       id: 2,
-      type: "youtube",
-      url: "https://www.youtube.com/embed/x_6_acDjvB8",
+      type: 'youtube',
+      url: 'https://www.youtube.com/embed/x_6_acDjvB8',
     },
     {
       id: 3,
-      type: "instagram",
-      url: "https://www.instagram.com/p/DN7akceDzhC/embed/",
+      type: 'instagram',
+      url: 'https://www.instagram.com/p/DN7akceDzhC/embed/',
     },
-  ];
+  ]
 
   const getThumbnail = (url: string) => {
-    const videoId = url.split("/").pop()?.split("?")[0];
-    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-  };
+    const videoId = url.split('/').pop()?.split('?')[0]
+    return `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`
+  }
 
   return (
     <main className="bg-white min-h-screen font-sans pb-20">
       <PageBanner
         title="Arksh Helps"
         breadcrumb={[
-          { name: "Home", href: "/", icon: <HomeIcon className="w-4 h-4" /> },
-          { name: "Arksh Helps" },
+          { name: 'Home', href: '/', icon: <HomeIcon className="w-4 h-4" /> },
+          { name: 'Arksh Helps' },
         ]}
       />
 
@@ -59,7 +59,7 @@ export default function ArkshHelps() {
           {blogPosts2.map((post) => (
             <Link
               key={post.id}
-              href={`/blog/${encodeURIComponent(post.title.toLowerCase().replace(/\s+/g, "-"))}`}
+              href={`/blog/${encodeURIComponent(post.title.toLowerCase().replace(/\s+/g, '-'))}`}
             >
               <div className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100 flex flex-col h-full hover:shadow-2xl transition-all duration-300 group">
                 <div className="relative h-64 w-full overflow-hidden">
@@ -106,22 +106,19 @@ export default function ArkshHelps() {
                 key={video.id}
                 className="relative rounded-2xl overflow-hidden aspect-9/12 shadow-xl group border border-gray-100"
               >
-                {video.type === "instagram" ? (
+                {video.type === 'instagram' ? (
                   /* IN-PAGE SCROLLABLE INSTAGRAM IFRAME */
                   <div className="w-full h-full overflow-y-auto bg-white">
                     <iframe
                       src={video.url}
                       className="w-full h-[150%] border-none" // Height set higher to allow internal scroll
-                      allowTransparency={true}
                     ></iframe>
                   </div>
                 ) : (
                   /* YOUTUBE THUMBNAIL (CLICKABLE) */
                   <div
                     className="relative w-full h-full cursor-pointer"
-                    onClick={() =>
-                      setActiveVideo({ url: video.url, type: video.type })
-                    }
+                    onClick={() => setActiveVideo({ url: video.url, type: video.type })}
                   >
                     <Image
                       src={getThumbnail(video.url)}
@@ -144,7 +141,7 @@ export default function ArkshHelps() {
       </section>
 
       {/* Video Modal (Only for YouTube) */}
-      {activeVideo && activeVideo.type === "youtube" && (
+      {activeVideo && activeVideo.type === 'youtube' && (
         <div
           className="fixed inset-0 z-100 bg-black/90 flex items-center justify-center p-4"
           onClick={() => setActiveVideo(null)}
@@ -178,31 +175,26 @@ export default function ArkshHelps() {
           </h2>
           <div className="space-y-6 text-gray-600 leading-relaxed text-lg">
             <p>
-              Our mission goes beyond business, it’s about building a better
-              tomorrow. A portion of the profits generated through our
-              operations at NPWC is proudly donated to charitable foundations
-              and social initiatives that uplift communities across Nepal.
-              Through our ongoing programs, we invest in education and health
-              projects that help empower the underprivileged across the nation.
-              Every contribution we make directly supports positive change —
-              creating opportunities where they are needed most.
+              Our mission goes beyond business, it’s about building a better tomorrow. A portion of
+              the profits generated through our operations at NPWC is proudly donated to charitable
+              foundations and social initiatives that uplift communities across Nepal. Through our
+              ongoing programs, we invest in education and health projects that help empower the
+              underprivileged across the nation. Every contribution we make directly supports
+              positive change — creating opportunities where they are needed most.
             </p>
             <p>
-              This commitment extends to our hospitality venture, Hotel Peace
-              Land, located in the sacred heart of Lumbini. A significant
-              portion of the profit generated from the hotel is channeled toward
-              the promotion and growth of Lumbini, the birthplace of Lord
-              Buddha. This financial support helps fund crucial initiatives for
-              cultural preservation, environmental stewardship, and community
-              upliftment within the Greater Lumbini Area, ensuring that the
-              success of the hotel directly contributes to maintaining the
-              spiritual and historical significance of this global peace hub.
-            </p>{" "}
+              This commitment extends to our hospitality venture, Hotel Peace Land, located in the
+              sacred heart of Lumbini. A significant portion of the profit generated from the hotel
+              is channeled toward the promotion and growth of Lumbini, the birthplace of Lord
+              Buddha. This financial support helps fund crucial initiatives for cultural
+              preservation, environmental stewardship, and community upliftment within the Greater
+              Lumbini Area, ensuring that the success of the hotel directly contributes to
+              maintaining the spiritual and historical significance of this global peace hub.
+            </p>{' '}
             <p>
-              We believe that every act of kindness can spark a lasting impact.
-              With your trust and support, we continue to champion community
-              welfare, promote sustainable growth, and inspire hope across
-              Nepal.
+              We believe that every act of kindness can spark a lasting impact. With your trust and
+              support, we continue to champion community welfare, promote sustainable growth, and
+              inspire hope across Nepal.
             </p>
             <p className="font-bold text-[#2257A6]">
               We believe that every act of kindness can spark a lasting impact.
@@ -211,5 +203,5 @@ export default function ArkshHelps() {
         </div>
       </section>
     </main>
-  );
+  )
 }

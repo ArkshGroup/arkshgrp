@@ -1,6 +1,6 @@
-"use client";
+'use client'
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react'
 import {
   MapPinIcon,
   BriefcaseIcon,
@@ -15,55 +15,51 @@ import {
   XMarkIcon,
   BuildingOfficeIcon,
   AcademicCapIcon,
-} from "@heroicons/react/24/outline";
-import { HomeIcon } from "@heroicons/react/24/solid";
-import Link from "next/link";
-import { JOBS_DATA } from "@/constant/career.data";
+} from '@heroicons/react/24/outline'
+import { HomeIcon } from '@heroicons/react/24/solid'
+import Link from 'next/link'
+import { JOBS_DATA } from '@/constant/career.data'
 
 // --- Mock Data ---
 
 export default function CareerSection() {
-  const [selectedJob, setSelectedJob] = useState<(typeof JOBS_DATA)[0] | null>(
-    null,
-  );
-  const [employmentStatus, setEmploymentStatus] = useState("Unemployed");
-  const [hasReferrer, setHasReferrer] = useState(false);
-  const [selectedPosition, setSelectedPosition] = useState("");
+  const [selectedJob, setSelectedJob] = useState<(typeof JOBS_DATA)[0] | null>(null)
+  const [employmentStatus, setEmploymentStatus] = useState('Unemployed')
+  const [hasReferrer, setHasReferrer] = useState(false)
+  const [selectedPosition, setSelectedPosition] = useState('')
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData.entries());
+    e.preventDefault()
+    const formData = new FormData(e.currentTarget)
+    const data = Object.fromEntries(formData.entries())
 
     const finalSubmission = {
       ...data,
       employmentStatus,
       hasReferrer,
-    };
+    }
 
-    console.log("Form Submitted:", finalSubmission);
-    alert("Application Submitted Successfully!");
-  };
+    console.log('Form Submitted:', finalSubmission)
+    alert('Application Submitted Successfully!')
+  }
 
   const handleApplyNow = (title: string) => {
-    setSelectedPosition(title);
-    document
-      .getElementById("application-form")
-      ?.scrollIntoView({ behavior: "smooth" });
-    setSelectedJob(null);
-  };
+    setSelectedPosition(title)
+    document.getElementById('application-form')?.scrollIntoView({ behavior: 'smooth' })
+    setSelectedJob(null)
+  }
 
   useEffect(() => {
     if (selectedJob) {
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = 'hidden'
     } else {
-      document.body.style.overflow = "auto";
+      document.body.style.overflow = 'auto'
     }
 
     return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, [selectedJob]);
+      document.body.style.overflow = 'auto'
+    }
+  }, [selectedJob])
 
   return (
     <div className="min-h-screen bg-white font-sans text-gray-900">
@@ -90,7 +86,7 @@ export default function CareerSection() {
       </div>
 
       {/* 2. Job Listings */}
-      <div className="max-[400px] mx-auto px-4 py-16 space-y-4">
+      <div className="max-w-400 mx-auto px-4 py-16 space-y-4">
         {JOBS_DATA.map((job) => (
           <div
             key={job.id}
@@ -98,24 +94,20 @@ export default function CareerSection() {
           >
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <h3 className="text-2xl font-bold text-gray-800">
-                  {job.title}
-                </h3>
+                <h3 className="text-2xl font-bold text-gray-800">{job.title}</h3>
                 <span className="bg-green-100 text-green-600 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase">
                   Active
                 </span>
               </div>
               <div className="flex flex-wrap gap-4 text-xs text-gray-500 font-medium">
                 <span className="flex items-center gap-1.5">
-                  <MapPinIcon className="w-4 h-4 text-blue-600" />{" "}
-                  {job.location}
+                  <MapPinIcon className="w-4 h-4 text-blue-600" /> {job.location}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <ClockIcon className="w-4 h-4 text-blue-600" /> {job.type}
                 </span>
                 <span className="flex items-center gap-1.5">
-                  <UsersIcon className="w-4 h-4 text-blue-600" />{" "}
-                  {job.positions}
+                  <UsersIcon className="w-4 h-4 text-blue-600" /> {job.positions}
                 </span>
               </div>
             </div>
@@ -144,12 +136,8 @@ export default function CareerSection() {
             {/* Modal Header */}
             <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-white sticky top-0 z-10">
               <div>
-                <h2 className="text-2xl font-bold text-slate-800">
-                  {selectedJob.title}
-                </h2>
-                <p className="text-sm text-blue-600 font-medium">
-                  {selectedJob.location}
-                </p>
+                <h2 className="text-2xl font-bold text-slate-800">{selectedJob.title}</h2>
+                <p className="text-sm text-blue-600 font-medium">{selectedJob.location}</p>
               </div>
               <button
                 onClick={() => setSelectedJob(null)}
@@ -185,10 +173,7 @@ export default function CareerSection() {
                     </h4>
                     <ul className="grid grid-cols-1 gap-3">
                       {selectedJob.requirements?.map((req, index) => (
-                        <li
-                          key={index}
-                          className="flex items-start gap-3 text-sm text-gray-600"
-                        >
+                        <li key={index} className="flex items-start gap-3 text-sm text-gray-600">
                           <span className="w-1.5 h-1.5 rounded-full bg-blue-600 mt-2 shrink-0" />
                           {req}
                         </li>
@@ -199,9 +184,7 @@ export default function CareerSection() {
                   {/* Role Description (for Social Media Strategist type data) */}
                   {selectedJob.about?.role && (
                     <section className="space-y-4">
-                      <h4 className="text-lg font-bold text-gray-800">
-                        Role Description
-                      </h4>
+                      <h4 className="text-lg font-bold text-gray-800">Role Description</h4>
                       <p className="text-gray-600 leading-relaxed text-sm">
                         {selectedJob.about.role}
                       </p>
@@ -220,12 +203,8 @@ export default function CareerSection() {
                       <div className="flex items-start gap-3">
                         <ClockIcon className="w-5 h-5 text-blue-600 shrink-0" />
                         <div>
-                          <p className="text-xs text-gray-500">
-                            Employment Type
-                          </p>
-                          <p className="text-sm font-semibold text-gray-800">
-                            {selectedJob.type}
-                          </p>
+                          <p className="text-xs text-gray-500">Employment Type</p>
+                          <p className="text-sm font-semibold text-gray-800">{selectedJob.type}</p>
                         </div>
                       </div>
 
@@ -281,9 +260,7 @@ export default function CareerSection() {
       <div id="application-form" className="bg-gray-50 py-20">
         <div className="max-w-6xl mx-auto px-4 bg-white rounded-[40px] shadow-xl border border-gray-100 p-8 md:p-16">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-semibold text-slate-800 mb-2">
-              Personal Information
-            </h2>
+            <h2 className="text-3xl font-semibold text-slate-800 mb-2">Personal Information</h2>
             <p className="text-gray-400">Tell us about yourself</p>
           </div>
 
@@ -356,9 +333,7 @@ export default function CareerSection() {
             </div>
 
             <div className="text-center py-6">
-              <h2 className="text-3xl font-semibold text-slate-800 mb-2">
-                Professional Details
-              </h2>
+              <h2 className="text-3xl font-semibold text-slate-800 mb-2">Professional Details</h2>
               <p className="text-gray-400">Tell us about your career</p>
             </div>
 
@@ -427,21 +402,19 @@ export default function CareerSection() {
 
             {/* Employment Status */}
             <div>
-              <p className="text-gray-600 font-bold mb-6 text-sm">
-                Current Employment Status
-              </p>
+              <p className="text-gray-600 font-bold mb-6 text-sm">Current Employment Status</p>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                 {[
-                  { label: "Employed", icon: BuildingOfficeIcon },
-                  { label: "Unemployed", icon: UserIcon },
-                  { label: "Self-employed", icon: BriefcaseIcon },
-                  { label: "Student", icon: AcademicCapIcon },
+                  { label: 'Employed', icon: BuildingOfficeIcon },
+                  { label: 'Unemployed', icon: UserIcon },
+                  { label: 'Self-employed', icon: BriefcaseIcon },
+                  { label: 'Student', icon: AcademicCapIcon },
                 ].map((item) => (
                   <button
                     key={item.label}
                     type="button"
                     onClick={() => setEmploymentStatus(item.label)}
-                    className={`py-8 rounded-3xl border-2 transition-all flex flex-col items-center gap-3 ${employmentStatus === item.label ? "border-blue-600 bg-blue-50 text-blue-600 shadow-lg" : "border-gray-100 bg-gray-50/50 text-gray-400"}`}
+                    className={`py-8 rounded-3xl border-2 transition-all flex flex-col items-center gap-3 ${employmentStatus === item.label ? 'border-blue-600 bg-blue-50 text-blue-600 shadow-lg' : 'border-gray-100 bg-gray-50/50 text-gray-400'}`}
                   >
                     <item.icon className="w-8 h-8 stroke-[1.5px]" />
                     <span className="font-bold text-sm">{item.label}</span>
@@ -452,12 +425,8 @@ export default function CareerSection() {
 
             {/* Resume Upload */}
             <div className="pt-10 text-center">
-              <h2 className="text-3xl font-bold text-slate-800 mb-2">
-                Documents & References
-              </h2>
-              <p className="text-gray-400 mb-8">
-                Upload your documents and provide references
-              </p>
+              <h2 className="text-3xl font-bold text-slate-800 mb-2">Documents & References</h2>
+              <p className="text-gray-400 mb-8">Upload your documents and provide references</p>
               <div className="border-2 border-dashed border-gray-200 rounded-[40px] p-12 bg-gray-50/30 hover:bg-gray-50 transition cursor-pointer group relative">
                 <input
                   type="file"
@@ -473,9 +442,7 @@ export default function CareerSection() {
                   <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <CloudArrowUpIcon className="w-8 h-8 text-blue-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800">
-                    Upload Your Resume
-                  </h3>
+                  <h3 className="text-xl font-bold text-slate-800">Upload Your Resume</h3>
                   <p className="text-gray-400 mt-2">
                     Drag and drop your file here or click to browse
                   </p>
@@ -493,15 +460,13 @@ export default function CareerSection() {
                 onClick={() => setHasReferrer(!hasReferrer)}
               >
                 <div
-                  className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${hasReferrer ? "bg-blue-600" : "bg-gray-200"}`}
+                  className={`w-12 h-6 rounded-full relative transition-colors duration-300 ${hasReferrer ? 'bg-blue-600' : 'bg-gray-200'}`}
                 >
                   <div
-                    className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${hasReferrer ? "left-7" : "left-1"}`}
+                    className={`absolute top-1 w-4 h-4 bg-white rounded-full transition-all duration-300 ${hasReferrer ? 'left-7' : 'left-1'}`}
                   ></div>
                 </div>
-                <span className="text-gray-600 font-bold text-sm">
-                  Do you have a referrer?
-                </span>
+                <span className="text-gray-600 font-bold text-sm">Do you have a referrer?</span>
               </div>
 
               {hasReferrer && (
@@ -553,5 +518,5 @@ export default function CareerSection() {
         </div>
       </div>
     </div>
-  );
+  )
 }

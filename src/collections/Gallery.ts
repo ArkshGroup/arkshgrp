@@ -38,11 +38,6 @@ export const Gallery: CollectionConfig = {
           relationTo: 'media',
           required: true,
         },
-        {
-          name: 'alt',
-          type: 'text',
-          label: 'Alt Text',
-        },
       ],
     },
   ],

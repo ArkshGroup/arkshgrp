@@ -36,6 +36,9 @@ const scaleIn: Variants = {
 export default function Arkshism() {
   return (
     <section className="py-20 px-4 bg-linear-to-br from-slate-100 to-blue-100 relative overflow-hidden">
+      <div className="absolute top-0 -right-20 w-96 h-96 bg-blue-200 rounded-full opacity-50 z-0 translate-x-1/3 -translate-y-1/2" />
+      <div className="absolute bottom-0 -left-20 w-96 h-96 bg-blue-200 rounded-full opacity-50 z-0 -translate-x-1/3 translate-y-1/2" />
+
       <div className="max-w-6xl mx-auto">
         {/* Top Card - Scales in on scroll */}
         <motion.div
@@ -78,7 +81,10 @@ export default function Arkshism() {
           {/* Card 1 */}
           <motion.div
             variants={fadeInUp}
-            className="bg-linear-to-br from-blue-800 to-blue-400 text-white p-8 rounded-2xl shadow-lg text-center"
+            whileHover={{ y: -12, scale: 1.03 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+            className="bg-[#3498DB] text-white p-8 rounded-2xl shadow-lg text-center cursor-pointer
+               transition-shadow duration-300 hover:shadow-2xl"
           >
             <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
               ★
@@ -94,7 +100,10 @@ export default function Arkshism() {
           {/* Card 2 */}
           <motion.div
             variants={fadeInUp}
-            className="bg-linear-to-br from-blue-800 to-blue-400 text-white p-8 rounded-2xl shadow-lg text-center"
+            whileHover={{ y: -12, scale: 1.03 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+            className="bg-[#3498DB] text-white p-8 rounded-2xl shadow-lg text-center cursor-pointer
+               transition-shadow duration-300 hover:shadow-2xl"
           >
             <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
               A
@@ -109,7 +118,10 @@ export default function Arkshism() {
           {/* Card 3 */}
           <motion.div
             variants={fadeInUp}
-            className="bg-linear-to-br from-blue-800 to-blue-400 text-white p-8 rounded-2xl shadow-lg text-center"
+            whileHover={{ y: -12, scale: 1.03 }}
+            transition={{ type: 'spring', stiffness: 300, damping: 18 }}
+            className="bg-[#3498DB] text-white p-8 rounded-2xl shadow-lg text-center cursor-pointer
+               transition-shadow duration-300 hover:shadow-2xl"
           >
             <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
               ⛓
@@ -132,7 +144,7 @@ export default function Arkshism() {
         >
           <Link href="/arkshism">
             <button
-              className="bg-[#2257A6] text-white px-10 py-4 rounded-full font-semibold shadow-lg 
+              className="bg-[#3498DB] text-white px-10 py-4 rounded-full font-semibold shadow-lg 
                        hover:bg-blue-500 hover:scale-105 hover:shadow-xl hover:-translate-y-1 
                        transition-all duration-300 flex items-center gap-2 cursor-pointer"
             >

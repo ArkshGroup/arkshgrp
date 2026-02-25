@@ -68,7 +68,7 @@ export default function Header() {
       }`}
     >
       {/* ================= TOP BAR ================= */}
-      <div className="bg-[#2257A6] text-white py-3 px-4 md:px-12 flex flex-col md:flex-row justify-around items-center gap-4">
+      <div className="bg-[#2257A6] text-white py-3.5 px-4 md:px-12 flex flex-col md:flex-row justify-around items-center gap-4">
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center text-[13px] font-medium">
           <a
             href="mailto:info@arkshgroup.com"
@@ -97,9 +97,9 @@ export default function Header() {
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white/20 hover:bg-white hover:text-[#209AEA] p-1.5 rounded-full text-[18px] transition-all duration-300 flex items-center justify-center w-8 h-8"
+                  className="bg-white/20 hover:bg-white hover:text-[#209AEA] p-1 rounded-full text-[18px] transition-all duration-300 flex items-center justify-center w-8 h-8"
                 >
-                  <Icon className="w-4 h-4" />
+                  <Icon className="w-5 h-4" />
                 </a>
 
                 {hasBrands && (
@@ -170,7 +170,7 @@ export default function Header() {
                 {hasDropdown ? (
                   <>
                     <button
-                      className={`font-semibold text-[15px] flex items-center gap-1 transition-colors ${
+                      className={`font-semibold text-[16px] flex items-center gap-1 transition-colors ${
                         isActive ? 'text-[#209AEA]' : 'text-[#005ABA] hover:text-[#209AEA]'
                       }`}
                     >
@@ -239,7 +239,7 @@ export default function Header() {
                 ) : (
                   <Link
                     href={item.href}
-                    className={`font-semibold text-[15px] transition-colors border-b-2 pb-1 ${
+                    className={`font-semibold text-[16px] transition-colors border-b-2 pb-1 ${
                       isActive
                         ? 'text-[#209AEA] border-[#209AEA]'
                         : 'text-[#005ABA] border-transparent hover:text-[#209AEA] hover:border-[#209AEA]'

@@ -86,7 +86,7 @@ export default function FeaturedProducts() {
 
           {/* Images Grid */}
           <div
-            className={`flex gap-4 sm:gap-6 md:gap-8 transition-all duration-700 ease-in-out ${
+            className={`flex gap-2 sm:gap-5 md:gap-8 transition-all duration-700 ease-in-out ${
               isTransitioning
                 ? 'opacity-40 scale-[0.98] blur-[2px]'
                 : 'opacity-100 scale-100 blur-0'
@@ -94,15 +94,22 @@ export default function FeaturedProducts() {
           >
             {getVisibleImages().map((img, idx) => (
               <div
-                key={`${currentIndex}-${idx}`} // Improved key to handle transitions
-                className="relative w-full h-75 sm:h-100 md:h-112.5 overflow-hidden rounded-xl shadow-lg"
+                key={`${currentIndex}-${idx}`}
+                className="relative w-full 
+                 h-80 
+                 sm:h-105
+                 md:h-130
+                 lg:h-150
+                 overflow-hidden rounded shadow-xl"
               >
                 <Image
                   src={img}
                   alt={`Featured ${currentIndex + idx + 1}`}
                   fill
-                  className="object-cover transition-transform duration-700"
-                  sizes="(max-width: 768px) 100vw, 33vw"
+                  className="object-cover transition-transform duration-700 hover:scale-105"
+                  sizes="(max-width: 640px) 100vw,
+               (max-width: 1024px) 50vw,
+               33vw"
                   priority={currentIndex === 0}
                 />
               </div>

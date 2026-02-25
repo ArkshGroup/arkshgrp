@@ -143,8 +143,9 @@ export default function NewsRoom() {
       </section>
 
       {/* CHAIRMAN CORNER */}
+      {/* CHAIRMAN CORNER */}
       <section className="py-18">
-        <div className="w-full max-w-8xl mx-auto px-4 relative group">
+        <div className="w-full max-w-8xl mx-auto px-4 relative">
           <SectionTitle title="Chairman's Corner" />
 
           <Swiper
@@ -173,16 +174,18 @@ export default function NewsRoom() {
                     href={item.youtubeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group rounded-xl overflow-hidden shadow-md hover:shadow-xl transition block"
+                    className="group relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition block"
                   >
                     <div className="relative overflow-hidden">
                       <img
                         src={thumbnail}
                         alt="Chairman Video"
-                        className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-700"
+                        className="w-full h-72 object-cover transition-transform duration-700 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="bg-[#2257A6] rounded-full p-4 shadow-lg text-white text-xl transform scale-90 group-hover:scale-100 transition-transform duration-300">
+
+                      {/* Play Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                        <div className="bg-[#1D8AD2] rounded-full p-4 shadow-lg text-white text-xl transform scale-75 transition-transform duration-300 group-hover:scale-100">
                           ▶
                         </div>
                       </div>
@@ -193,16 +196,23 @@ export default function NewsRoom() {
             })}
           </Swiper>
 
+          {/* Navigation Buttons */}
           <button
             id="chairman-prev"
-            className="absolute left-0 top-[60%] -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all ml-4 opacity-0 group-hover:opacity-100 disabled:opacity-30"
+            className="absolute left-0 top-65 -translate-y-1/2 z-20 
+                 bg-white/55 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl 
+                 text-[#1E73BE] hover:text-white 
+                 transition-all duration-300 ml-4"
           >
             <ChevronLeftIcon className="w-6 h-6" />
           </button>
 
           <button
             id="chairman-next"
-            className="absolute right-0 top-[60%] -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all mr-4 opacity-0 group-hover:opacity-100 disabled:opacity-30"
+            className="absolute right-0 top-65 -translate-y-1/2 z-20 
+                 bg-white/55 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl 
+                 text-[#1E73BE] hover:text-white 
+                 transition-all duration-300 mr-4"
           >
             <ChevronRightIcon className="w-6 h-6" />
           </button>
@@ -210,8 +220,9 @@ export default function NewsRoom() {
       </section>
 
       {/* CEO CORNER */}
+      {/* CEO CORNER */}
       <section className="py-15">
-        <div className="w-full max-w-8xl mx-auto px-4 relative group">
+        <div className="w-full max-w-8xl mx-auto px-4 relative">
           <SectionTitle title="CEO's Corner" />
 
           <Swiper
@@ -240,16 +251,18 @@ export default function NewsRoom() {
                     href={item.youtubeUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="group rounded-xl overflow-hidden shadow-md hover:shadow-xl transition block"
+                    className="group relative rounded-xl overflow-hidden shadow-md hover:shadow-xl transition block"
                   >
                     <div className="relative overflow-hidden">
                       <img
                         src={thumbnail}
                         alt="CEO Video"
-                        className="w-full h-72 object-cover group-hover:scale-110 transition-transform duration-700"
+                        className="w-full h-72 object-cover transition-transform duration-700 group-hover:scale-110"
                       />
-                      <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <div className="bg-[#2257A6] rounded-full p-4 shadow-lg text-white text-xl transform scale-90 group-hover:scale-100 transition-transform duration-300">
+
+                      {/* Play Overlay */}
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                        <div className="bg-[#1D8AD2] rounded-full p-4 shadow-lg text-white text-xl transform scale-75 transition-transform duration-300 group-hover:scale-100">
                           ▶
                         </div>
                       </div>
@@ -260,22 +273,28 @@ export default function NewsRoom() {
             })}
           </Swiper>
 
+          {/* Navigation Buttons */}
           <button
             id="ceo-prev"
-            className="absolute left-0 top-[60%] -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all ml-4 opacity-0 group-hover:opacity-100 disabled:opacity-30"
+            className="absolute left-0 top-65 -translate-y-1/2 z-20 
+                 bg-white/55 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl 
+                 text-[#1E73BE] hover:text-white 
+                 transition-all duration-300 ml-4"
           >
             <ChevronLeftIcon className="w-6 h-6" />
           </button>
 
           <button
             id="ceo-next"
-            className="absolute right-0 top-[60%] -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all mr-4 opacity-0 group-hover:opacity-100 disabled:opacity-30"
+            className="absolute right-0 top-65 -translate-y-1/2 z-20 
+                 bg-white/55 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl 
+                 text-[#1E73BE] hover:text-white 
+                 transition-all duration-300 mr-4"
           >
             <ChevronRightIcon className="w-6 h-6" />
           </button>
         </div>
       </section>
-
       {/* NEWS GRID */}
       <section className="w-full max-w-8xl mx-auto px-4 py-20">
         <SectionTitle title="Latest News & Updates" />
