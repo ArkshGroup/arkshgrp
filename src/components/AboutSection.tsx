@@ -144,7 +144,7 @@ export default function AboutSection() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[
                 {
-                  title: 'Sustainable Growth',
+                  title: 'Sustainable Growths',
                   desc: 'To become sustainably-growing business group through carefully planned strategies.',
                 },
                 {
