@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { motion, Variants } from 'framer-motion'
 
 export default function Hero() {
@@ -24,13 +25,26 @@ export default function Hero() {
     <>
       {/* Hero Background */}
       <div
-        className="w-full h-[55vh] sm:h-[65vh] md:h-[75vh] lg:h-[90vh] bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('https://arkshgroup.com/uploads/about/WhatsApp%20Image%202025-07-21%20at%2010.42.17%20AM.jpeg')",
-        }}
-      />
-
+        className="
+          relative
+          w-full
+          h-[55vh]
+          sm:h-[65vh]
+          md:h-[75vh]
+          lg:h-[90vh]
+          xl:h-[90vh]
+          overflow-hidden
+        "
+      >
+        <Image
+          src="https://arkshgroup.com/uploads/about/WhatsApp%20Image%202025-07-21%20at%2010.42.17%20AM.jpeg"
+          alt="Arksh Group Hero Banner"
+          fill
+          priority
+          sizes="100vw"
+          className="object-cover object-bottom"
+        />
+      </div>
       {/* Content Section */}
       <section className="w-full bg-white text-gray-900 py-12 sm:py-16 md:py-20 lg:py-24 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8">
