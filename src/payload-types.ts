@@ -70,7 +70,6 @@ export interface Config {
     contacts: Contact;
     categories: Category;
     media: Media;
-    notice: Notice;
     blogs: Blog;
     careers: Career;
     applications: Application;
@@ -78,7 +77,8 @@ export interface Config {
     gallery: Gallery;
     news: News;
     'youtube-news': YoutubeNew;
-    'gallery-album': GalleryAlbum;
+    'md-gallery': MdGallery;
+    'chairman-categories': ChairmanCategory;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -88,7 +88,6 @@ export interface Config {
     contacts: ContactsSelect<false> | ContactsSelect<true>;
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    notice: NoticeSelect<false> | NoticeSelect<true>;
     blogs: BlogsSelect<false> | BlogsSelect<true>;
     careers: CareersSelect<false> | CareersSelect<true>;
     applications: ApplicationsSelect<false> | ApplicationsSelect<true>;
@@ -96,7 +95,8 @@ export interface Config {
     gallery: GallerySelect<false> | GallerySelect<true>;
     news: NewsSelect<false> | NewsSelect<true>;
     'youtube-news': YoutubeNewsSelect<false> | YoutubeNewsSelect<true>;
-    'gallery-album': GalleryAlbumSelect<false> | GalleryAlbumSelect<true>;
+    'md-gallery': MdGallerySelect<false> | MdGallerySelect<true>;
+    'chairman-categories': ChairmanCategoriesSelect<false> | ChairmanCategoriesSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -156,9 +156,6 @@ export interface Contact {
 export interface Category {
   id: string;
   name: string;
-  /**
-   * URL-friendly version of the category name (e.g., "players", "championships", "trainings")
-   */
   slug: string;
   updatedAt: string;
   createdAt: string;
@@ -181,18 +178,6 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "notice".
- */
-export interface Notice {
-  id: string;
-  title: string;
-  img?: (string | null) | Media;
-  isActive: boolean;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -404,11 +389,33 @@ export interface YoutubeNew {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "gallery-album".
+ * via the `definition` "md-gallery".
  */
-export interface GalleryAlbum {
+export interface MdGallery {
   id: string;
-  image: string | Media;
+  title: string;
+  /**
+   * Select a category.
+   */
+  category: string | ChairmanCategory;
+  year?: string | null;
+  images: {
+    image: string | Media;
+    id?: string | null;
+  }[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Categories for Gallery. Add categories here, then assign them to Gallery items.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chairman-categories".
+ */
+export interface ChairmanCategory {
+  id: string;
+  name: string;
+  slug: string;
   updatedAt: string;
   createdAt: string;
 }
@@ -430,10 +437,6 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
-      } | null)
-    | ({
-        relationTo: 'notice';
-        value: string | Notice;
       } | null)
     | ({
         relationTo: 'blogs';
@@ -464,8 +467,12 @@ export interface PayloadLockedDocument {
         value: string | YoutubeNew;
       } | null)
     | ({
-        relationTo: 'gallery-album';
-        value: string | GalleryAlbum;
+        relationTo: 'md-gallery';
+        value: string | MdGallery;
+      } | null)
+    | ({
+        relationTo: 'chairman-categories';
+        value: string | ChairmanCategory;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -549,17 +556,6 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "notice_select".
- */
-export interface NoticeSelect<T extends boolean = true> {
-  title?: T;
-  img?: T;
-  isActive?: T;
-  updatedAt?: T;
-  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -688,10 +684,28 @@ export interface YoutubeNewsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "gallery-album_select".
+ * via the `definition` "md-gallery_select".
  */
-export interface GalleryAlbumSelect<T extends boolean = true> {
-  image?: T;
+export interface MdGallerySelect<T extends boolean = true> {
+  title?: T;
+  category?: T;
+  year?: T;
+  images?:
+    | T
+    | {
+        image?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chairman-categories_select".
+ */
+export interface ChairmanCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
 }

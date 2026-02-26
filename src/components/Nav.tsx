@@ -22,25 +22,6 @@ const Nav: React.FC = () => {
     <nav className="side-nav">
       {/* Nav Groups */}
       <div className="nav-content">
-        {/* COMMUNICATION */}
-        <div className="nav-group">
-          <div className="nav-group-header" onClick={() => toggleGroup('communication')}>
-            <span>Communication</span>
-            <span className={`nav-arrow ${openGroups.communication ? 'open' : ''}`}>▼</span>
-          </div>
-          {openGroups.communication && (
-            <ul className="nav-links">
-            
-              <li>
-                <Link href="/admin/collections/contacts">
-                  <span className="nav-icon">📞</span>
-                  Contacts
-                </Link>
-              </li>
-            </ul>
-          )}
-        </div>
-
         {/* MEDIA */}
         <div className="nav-group">
           <div className="nav-group-header">
@@ -60,21 +41,21 @@ const Nav: React.FC = () => {
               </Link>
             </li>
             <li>
-              <Link href="/admin/collections/gallery-album">
+              <Link href="/admin/collections/chairman-categories">
                 <span className="nav-icon">📸</span>
-                Gallery Album
+                Chairman Image Category
+              </Link>
+            </li>
+            <li>
+              <Link href="/admin/collections/md-gallery">
+                <span className="nav-icon">📸</span>
+                Chairman Gallery
               </Link>
             </li>
             <li>
               <Link href="/admin/collections/media">
                 <span className="nav-icon">🖼️</span>
                 Media
-              </Link>
-            </li>
-            <li>
-              <Link href="/admin/collections/notice">
-                <span className="nav-icon">📢</span>
-                Notice
               </Link>
             </li>
           </ul>
@@ -132,7 +113,23 @@ const Nav: React.FC = () => {
             </ul>
           )}
         </div>
-
+        {/* COMMUNICATION */}
+        <div className="nav-group">
+          <div className="nav-group-header" onClick={() => toggleGroup('communication')}>
+            <span>Communication</span>
+            <span className={`nav-arrow ${openGroups.communication ? 'open' : ''}`}>▼</span>
+          </div>
+          {openGroups.communication && (
+            <ul className="nav-links">
+              <li>
+                <Link href="/admin/collections/contacts">
+                  <span className="nav-icon">📞</span>
+                  Contacts
+                </Link>
+              </li>
+            </ul>
+          )}
+        </div>
         {/* AUTHENTICATION */}
         <div className="nav-group">
           <div className="nav-group-header" onClick={() => toggleGroup('authentication')}>

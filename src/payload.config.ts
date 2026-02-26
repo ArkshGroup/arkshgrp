@@ -10,15 +10,14 @@ import { Users } from './collections/Users'
 import { Media } from './collections/Media'
 import Contact from './collections/Contact'
 import Blog from './collections/Blog'
-import Notice from './collections/Notice'
-
 import Category from './collections/Category'
 import Career from './collections/Career'
 import Applications from './collections/Applications'
 import { Gallery } from './collections/Gallery'
 import News from './collections/News'
 import { YoutubeNews } from './collections/YoutubeNews'
-import { GalleryAlbum } from './collections/GalleryAlbum'
+import { ChairmanGallery } from './collections/ChairmanGallery'
+import ChairmanCategory from './collections/ChairmanGalleryCategory'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -52,10 +51,10 @@ export default buildConfig({
   cors: ['https://arkshgroup.com', 'https://www.arkshgroup.com'],
   collections: [
     Contact,
-   
+
     Category,
     Media,
-    Notice,
+
     Blog,
     Career,
     Applications,
@@ -63,7 +62,8 @@ export default buildConfig({
     Gallery,
     News,
     YoutubeNews,
-    GalleryAlbum,
+    ChairmanGallery,
+    ChairmanCategory,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

@@ -19,8 +19,6 @@ import Spinner from './Spinner'
 import 'swiper/css'
 import 'swiper/css/navigation'
 
-/* ---------------- CONSTANTS ---------------- */
-
 const NEWS_PER_PAGE = 6
 const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
 const SWIPER_MODULES = [Autoplay, Navigation]
@@ -30,15 +28,11 @@ const SWIPER_BREAKPOINTS = {
   1024: { slidesPerView: 3 },
 } as const
 
-/* ---------------- HELPERS ---------------- */
-
 function getYouTubeId(url: string): string | null {
   const regExp = /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&]+)/
   const match = url.match(regExp)
   return match ? match[1] : null
 }
-
-/* ---------------- TYPES ---------------- */
 
 interface NewsArticle {
   id: string
@@ -55,15 +49,11 @@ interface YoutubeNews {
   cornerType: 'chairman' | 'ceo'
 }
 
-/* ---------------- COMPONENT ---------------- */
-
 export default function NewsRoom() {
   const [newsArticles, setNewsArticles] = useState<NewsArticle[]>([])
   const [loading, setLoading] = useState(true)
-
   const [chairmanCorner, setChairmanCorner] = useState<YoutubeNews[]>([])
   const [ceoCorner, setCeoCorner] = useState<YoutubeNews[]>([])
-
   const [currentPage, setCurrentPage] = useState(1)
 
   useEffect(() => {
@@ -71,7 +61,9 @@ export default function NewsRoom() {
       try {
         const [newsRes, chairmanRes, ceoRes] = await Promise.all([
           fetch(`${PAYLOAD_BASE_URL}/api/news?sort=-date&limit=100&depth=1`),
-          fetch(`${PAYLOAD_BASE_URL}/api/youtube-news?where[cornerType][equals]=chairman&sort=order`),
+          fetch(
+            `${PAYLOAD_BASE_URL}/api/youtube-news?where[cornerType][equals]=chairman&sort=order`,
+          ),
           fetch(`${PAYLOAD_BASE_URL}/api/youtube-news?where[cornerType][equals]=ceo&sort=order`),
         ])
 
@@ -100,6 +92,7 @@ export default function NewsRoom() {
     () => newsArticles.slice(indexOfFirstNews, indexOfLastNews),
     [newsArticles, indexOfFirstNews, indexOfLastNews],
   )
+
   const totalPages = useMemo(
     () => Math.ceil(newsArticles.length / NEWS_PER_PAGE),
     [newsArticles.length],
@@ -118,8 +111,6 @@ export default function NewsRoom() {
     () => Array.from({ length: totalPages }, (_, i) => i + 1),
     [totalPages],
   )
-
-  /* FULL PAGE LOADER     */
 
   if (loading) {
     return (
@@ -141,12 +132,10 @@ export default function NewsRoom() {
         }}
       >
         <div className="absolute inset-0 bg-blue-900/60"></div>
-
         <div className="relative z-10 px-4">
           <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 tracking-tight">
             News Room
           </h1>
-
           <div className="flex items-center justify-center gap-2 text-sm font-semibold">
             <HomeIcon className="w-4 h-4" />
             <Link href="/" className="hover:underline">
@@ -158,160 +147,143 @@ export default function NewsRoom() {
         </div>
       </section>
 
-      {/* CHAIRMAN'S CORNER */}
+      {/* CHAIRMAN */}
       <section className="py-12 md:py-16">
-        <div className="w-full max-w-7xl mx-auto px-4 relative">
+        <div className="w-full max-w-7xl mx-auto px-4">
           <SectionTitle title="Chairman's Corner" />
 
-          <Swiper
-            modules={SWIPER_MODULES}
-            spaceBetween={20}
-            slidesPerView={3}
-            autoplay={{ delay: 3000, disableOnInteraction: false }}
-            navigation={{
-              prevEl: '#chairman-prev',
-              nextEl: '#chairman-next',
-            }}
-            loop={chairmanCorner.length > 3}
-            breakpoints={SWIPER_BREAKPOINTS}
-          >
-            {chairmanCorner.map((item, index) => {
-              const videoId = getYouTubeId(item.youtubeUrl)
-              const thumbnailUrl = videoId
-                ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-                : null
-              return (
-                <SwiperSlide key={item.id}>
-                  <a
-                    href={item.youtubeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
-                  >
-                    <div className="relative w-full min-h-80 aspect-4/3 overflow-hidden bg-gray-900 sm:min-h-96 md:min-h-112">
-                      {thumbnailUrl ? (
-                        <Image
-                          src={thumbnailUrl}
-                          alt="Chairman's Corner Video"
-                          fill
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          priority={index === 0}
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
-                          No thumbnail
-                        </div>
-                      )}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1D8AD2] text-white shadow-xl ring-4 ring-white/30 transition-transform duration-300 group-hover:scale-110">
-                          <PlayIcon className="h-7 w-7 ml-0.5" aria-hidden />
-                        </span>
-                      </div>
-                    </div>
-                  </a>
-                </SwiperSlide>
-              )
-            })}
-          </Swiper>
+          <div className="relative px-10">
+            <Swiper
+              modules={SWIPER_MODULES}
+              spaceBetween={20}
+              slidesPerView={3}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              navigation={{ prevEl: '#chairman-prev', nextEl: '#chairman-next' }}
+              loop={chairmanCorner.length > 3}
+              breakpoints={SWIPER_BREAKPOINTS}
+            >
+              {chairmanCorner.map((item, index) => {
+                const videoId = getYouTubeId(item.youtubeUrl)
+                const thumbnailUrl = videoId
+                  ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                  : null
 
-          {/* Navigation Buttons */}
-          <button
-            id="chairman-prev"
-            type="button"
-            aria-label="Previous"
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 ml-2 md:ml-4"
-          >
-            <ChevronLeftIcon className="w-6 h-6" />
-          </button>
-          <button
-            id="chairman-next"
-            type="button"
-            aria-label="Next"
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 mr-2 md:mr-4"
-          >
-            <ChevronRightIcon className="w-6 h-6" />
-          </button>
+                return (
+                  <SwiperSlide key={item.id}>
+                    <a
+                      href={item.youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+                    >
+                      <div className="relative w-full min-h-80 aspect-4/3 overflow-hidden bg-gray-900 sm:min-h-96 md:min-h-100">
+                        {thumbnailUrl && (
+                          <Image
+                            src={thumbnailUrl}
+                            alt="Chairman's Corner Video"
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            priority={index === 0}
+                          />
+                        )}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1D8AD2] text-white shadow-xl ring-4 ring-white/30 transition-transform duration-300 group-hover:scale-110">
+                            <PlayIcon className="h-7 w-7 ml-0.5" />
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  </SwiperSlide>
+                )
+              })}
+            </Swiper>
+
+            <button
+              id="chairman-prev"
+              className="absolute -left-6 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300"
+            >
+              <ChevronLeftIcon className="w-6 h-6" />
+            </button>
+
+            <button
+              id="chairman-next"
+              className="absolute -right-6 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300"
+            >
+              <ChevronRightIcon className="w-6 h-6" />
+            </button>
+          </div>
         </div>
       </section>
 
-      {/* CEO'S CORNER */}
+      {/* CEO */}
       <section className="py-12 md:py-16">
-        <div className="w-full max-w-7xl mx-auto px-4 relative">
+        <div className="w-full max-w-7xl mx-auto px-4">
           <SectionTitle title="CEO's Corner" />
 
-          <Swiper
-            modules={SWIPER_MODULES}
-            spaceBetween={20}
-            slidesPerView={3}
-            autoplay={{ delay: 3000, disableOnInteraction: false }}
-            navigation={{
-              prevEl: '#ceo-prev',
-              nextEl: '#ceo-next',
-            }}
-            loop={ceoCorner.length > 3}
-            breakpoints={SWIPER_BREAKPOINTS}
-          >
-            {ceoCorner.map((item, index) => {
-              const videoId = getYouTubeId(item.youtubeUrl)
-              const thumbnailUrl = videoId
-                ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
-                : null
-              return (
-                <SwiperSlide key={item.id}>
-                  <a
-                    href={item.youtubeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="group relative block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
-                  >
-                    <div className="relative w-full min-h-80 aspect-4/3 overflow-hidden bg-gray-900 sm:min-h-96 md:min-h-112">
-                      {thumbnailUrl ? (
-                        <Image
-                          src={thumbnailUrl}
-                          alt="CEO's Corner Video"
-                          fill
-                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                          className="object-cover transition-transform duration-500 group-hover:scale-105"
-                          priority={index === 0}
-                        />
-                      ) : (
-                        <div className="absolute inset-0 flex items-center justify-center text-gray-500 text-sm">
-                          No thumbnail
-                        </div>
-                      )}
-                      <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                        <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1D8AD2] text-white shadow-xl ring-4 ring-white/30 transition-transform duration-300 group-hover:scale-110">
-                          <PlayIcon className="h-7 w-7 ml-0.5" aria-hidden />
-                        </span>
-                      </div>
-                    </div>
-                  </a>
-                </SwiperSlide>
-              )
-            })}
-          </Swiper>
+          <div className="relative px-10">
+            <Swiper
+              modules={SWIPER_MODULES}
+              spaceBetween={20}
+              slidesPerView={3}
+              autoplay={{ delay: 3000, disableOnInteraction: false }}
+              navigation={{ prevEl: '#ceo-prev', nextEl: '#ceo-next' }}
+              loop={ceoCorner.length > 3}
+              breakpoints={SWIPER_BREAKPOINTS}
+            >
+              {ceoCorner.map((item, index) => {
+                const videoId = getYouTubeId(item.youtubeUrl)
+                const thumbnailUrl = videoId
+                  ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`
+                  : null
 
-          {/* Navigation Buttons */}
-          <button
-            id="ceo-prev"
-            type="button"
-            aria-label="Previous"
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 ml-2 md:ml-4"
-          >
-            <ChevronLeftIcon className="w-6 h-6" />
-          </button>
-          <button
-            id="ceo-next"
-            type="button"
-            aria-label="Next"
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 bg-white/90 hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300 mr-2 md:mr-4"
-          >
-            <ChevronRightIcon className="w-6 h-6" />
-          </button>
+                return (
+                  <SwiperSlide key={item.id}>
+                    <a
+                      href={item.youtubeUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="group block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
+                    >
+                      <div className="relative w-full min-h-80 aspect-4/3 overflow-hidden bg-gray-900 sm:min-h-96 md:min-h-100">
+                        {thumbnailUrl && (
+                          <Image
+                            src={thumbnailUrl}
+                            alt="CEO's Corner Video"
+                            fill
+                            className="object-cover transition-transform duration-500 group-hover:scale-105"
+                            priority={index === 0}
+                          />
+                        )}
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1D8AD2] text-white shadow-xl ring-4 ring-white/30 transition-transform duration-300 group-hover:scale-110">
+                            <PlayIcon className="h-7 w-7 ml-0.5" />
+                          </span>
+                        </div>
+                      </div>
+                    </a>
+                  </SwiperSlide>
+                )
+              })}
+            </Swiper>
+
+            <button
+              id="ceo-prev"
+              className="absolute -left-6 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300"
+            >
+              <ChevronLeftIcon className="w-6 h-6" />
+            </button>
+
+            <button
+              id="ceo-next"
+              className="absolute -right-6 top-1/2 -translate-y-1/2 z-20 bg-white hover:bg-[#1E73BE] p-3 rounded-full shadow-xl text-[#1E73BE] hover:text-white transition-all duration-300"
+            >
+              <ChevronRightIcon className="w-6 h-6" />
+            </button>
+          </div>
         </div>
       </section>
-      {/* NEWS GRID */}
+
+      {/* NEWS GRID (UNCHANGED) */}
       <section className="w-full max-w-7xl mx-auto px-4 py-20">
         <SectionTitle title="Latest News & Updates" />
 
@@ -322,49 +294,50 @@ export default function NewsRoom() {
                 ? `${PAYLOAD_BASE_URL}${article.image.url}`
                 : null
             return (
-            <Link
-              key={article.id}
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300"
-            >
-              {/* Image container: larger aspect for bigger image */}
-              <div className="relative w-full min-h-64 aspect-4/3 sm:min-h-72 overflow-hidden bg-gray-100">
-                {imageUrl ? (
-                  <Image
-                    src={imageUrl}
-                    alt={article.title}
-                    fill
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-sm">
-                    No image
-                  </div>
-                )}
-              </div>
-
-              <div className="p-6 sm:p-8 flex flex-col flex-1">
-                <div className="flex items-center gap-2 text-gray-400 text-sm mb-3">
-                  <CalendarIcon className="w-4 h-4 text-[#3498db] shrink-0" />
-                  {new Date(article.date).toLocaleDateString()}
+              <Link
+                key={article.id}
+                href={article.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group flex flex-col bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-md hover:shadow-xl transition-all duration-300"
+              >
+                <div className="relative w-full min-h-64 aspect-4/3 sm:min-h-72 overflow-hidden bg-gray-100">
+                  {imageUrl ? (
+                    <Image
+                      src={imageUrl}
+                      alt={article.title}
+                      fill
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                      className="object-cover object-top transition-transform duration-500 ease-out group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-sm">
+                      No image
+                    </div>
+                  )}
                 </div>
 
-                <h3 className="text-lg font-bold text-[#2c3e50] mb-3 group-hover:text-[#3498db] transition-colors line-clamp-2">
-                  {article.title}
-                </h3>
+                <div className="p-6 sm:p-8 flex flex-col flex-1">
+                  <div className="flex items-center gap-2 text-gray-400 text-sm mb-3">
+                    <CalendarIcon className="w-4 h-4 text-[#3498db] shrink-0" />
+                    {new Date(article.date).toLocaleDateString()}
+                  </div>
 
-                <p className="text-[#5d6d7e] text-sm mb-5 line-clamp-3 flex-1">{article.excerpt}</p>
+                  <h3 className="text-lg font-bold text-[#2c3e50] mb-3 group-hover:text-[#3498db] transition-colors line-clamp-2">
+                    {article.title}
+                  </h3>
 
-                <span className="inline-flex items-center gap-1 text-[#3498db] font-bold text-xs uppercase">
-                  Read More
-                  <ChevronRightIcon className="w-4 h-4" />
-                </span>
-              </div>
-            </Link>
-            );
+                  <p className="text-[#5d6d7e] text-sm mb-5 line-clamp-3 flex-1">
+                    {article.excerpt}
+                  </p>
+
+                  <span className="inline-flex items-center gap-1 text-[#3498db] font-bold text-xs uppercase">
+                    Read More
+                    <ChevronRightIcon className="w-4 h-4" />
+                  </span>
+                </div>
+              </Link>
+            )
           })}
         </div>
 
@@ -405,8 +378,6 @@ export default function NewsRoom() {
     </main>
   )
 }
-
-/* ---------------- SECTION TITLE (memoized) ---------------- */
 
 const SectionTitle = React.memo(function SectionTitle({ title }: { title: string }) {
   return (

@@ -30,16 +30,24 @@ const PageBanner: React.FC<PageBannerProps> = ({
 }) => {
   return (
     <section
-      className={`${padding} ${width} text-${textAlign}`}
+      className={`
+    ${width}
+    px-4 sm:px-6 md:px-10 lg:px-16
+    py-10 sm:py-14 md:py-20
+    text-center md:text-${textAlign}
+  `}
       style={{ backgroundColor: bgColor, color: textColor, ...style }}
     >
-      <h1 className="text-6xl font-bold mb-5 tracking-tight">{title}</h1>
+      <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-5 tracking-tight leading-tight">
+        {title}
+      </h1>
 
       {breadcrumb.length > 0 && (
-        <div className="flex items-center justify-center gap-2 text-sm font-semibold">
+        <div className="flex flex-wrap items-center justify-center md:justify-center gap-2 text-xs sm:text-sm font-semibold">
           {breadcrumb.map((item, index) => (
             <span key={index} className="flex items-center gap-1">
               {item.icon && <span className="w-4 h-4">{item.icon}</span>}
+
               {item.href ? (
                 <Link href={item.href} className="hover:underline transition-all">
                   {item.name}
@@ -47,6 +55,7 @@ const PageBanner: React.FC<PageBannerProps> = ({
               ) : (
                 <span className={index === 0 ? '' : 'opacity-90'}>{item.name}</span>
               )}
+
               {index < breadcrumb.length - 1 && <span className="opacity-60">/</span>}
             </span>
           ))}

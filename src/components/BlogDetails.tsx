@@ -4,12 +4,7 @@ import React, { useEffect, useState, useMemo } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useParams } from 'next/navigation'
-import {
-  HomeIcon,
-  CalendarDaysIcon,
-  UserIcon,
-  TagIcon,
-} from '@heroicons/react/24/outline'
+import { HomeIcon, CalendarDaysIcon, UserIcon, TagIcon } from '@heroicons/react/24/outline'
 import { FaFacebookF, FaTwitter, FaWhatsapp, FaLinkedinIn } from 'react-icons/fa'
 import PageBanner from '@/components/PageBanner'
 import RichText from '@/components/RichText'
@@ -47,9 +42,7 @@ export default function BlogDetails({
   const params = useParams()
   const slug = typeof params?.slug === 'string' ? params.slug : ''
   const [post, setPost] = useState<BlogPost | null>(initialPost)
-  const [recentPosts, setRecentPosts] = useState<BlogPost[]>(
-    initialRecentPosts ?? [],
-  )
+  const [recentPosts, setRecentPosts] = useState<BlogPost[]>(initialRecentPosts ?? [])
   const [loading, setLoading] = useState(!initialPost)
   const [currentUrl, setCurrentUrl] = useState('')
 
@@ -106,10 +99,7 @@ export default function BlogDetails({
       <div className="min-h-screen flex items-center justify-center text-gray-500">
         <div className="text-center">
           <p className="mb-4">Blog not found.</p>
-          <Link
-            href="/blog"
-            className="text-[#2257A6] font-medium hover:underline"
-          >
+          <Link href="/blog" className="text-[#2257A6] font-medium hover:underline">
             Back to blog
           </Link>
         </div>
@@ -119,7 +109,8 @@ export default function BlogDetails({
 
   const payloadUrl = PAYLOAD_BASE_URL
   const imageUrl = post.image?.url
-  const hasContent = post.content && typeof post.content === 'object' && (post.content as { root?: unknown }).root
+  const hasContent =
+    post.content && typeof post.content === 'object' && (post.content as { root?: unknown }).root
   const bodyContent = hasContent ? post.content : post.excerpt
 
   const recentFiltered = useMemo(
@@ -139,12 +130,12 @@ export default function BlogDetails({
       <PageBanner
         title={post.title}
         padding="py-12 px-6"
-        width="w-425 mx-auto"
+        width="w-full mx-auto"
         textAlign="center"
         breadcrumb={[
           { name: 'Home', href: '/', icon: <HomeIcon className="w-4 h-4" /> },
           { name: 'Our Blog', href: '/blog' },
-          { name: post.title.length > 24 ? `${post.title.slice(0, 24)}…` : post.title },
+          { name: post.title },
         ]}
       />
 
@@ -195,9 +186,7 @@ export default function BlogDetails({
               </div>
 
               <div className="mt-16 pt-8 border-t border-gray-100">
-                <h3 className="text-xl font-bold text-gray-900 mb-6">
-                  Share This Article
-                </h3>
+                <h3 className="text-xl font-bold text-gray-900 mb-6">Share This Article</h3>
                 <div className="flex flex-wrap gap-3">
                   <a
                     href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`}
@@ -248,7 +237,9 @@ export default function BlogDetails({
                   ) : (
                     recentFiltered.map((recentPost) => {
                       const rpImageUrl =
-                        recentPost.image && typeof recentPost.image === 'object' && 'url' in recentPost.image
+                        recentPost.image &&
+                        typeof recentPost.image === 'object' &&
+                        'url' in recentPost.image
                           ? (recentPost.image as { url?: string }).url
                           : undefined
                       return (
@@ -277,9 +268,7 @@ export default function BlogDetails({
                             </h4>
                             <div className="flex items-center gap-1.5 text-gray-400 text-xs mt-2">
                               <CalendarDaysIcon className="w-4 h-4 text-[#2257A6] shrink-0" />
-                              <span>
-                                {new Date(recentPost.date).toLocaleDateString()}
-                              </span>
+                              <span>{new Date(recentPost.date).toLocaleDateString()}</span>
                             </div>
                           </div>
                         </Link>

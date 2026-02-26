@@ -1,7 +1,7 @@
 import { CollectionConfig } from 'payload'
 
-const Category: CollectionConfig = {
-  slug: 'categories',
+const ChairmanCategory: CollectionConfig = {
+  slug: 'chairman-categories',
   admin: {
     useAsTitle: 'name',
     group: 'MEDIA',
@@ -26,7 +26,7 @@ const Category: CollectionConfig = {
       type: 'text',
       required: true,
       unique: true,
-      label: 'Category Name',
+      label: 'ChairmanCategory Name',
     },
     {
       name: 'slug',
@@ -38,4 +38,4 @@ const Category: CollectionConfig = {
   ],
 }
 
-export default Category
+export default ChairmanCategory

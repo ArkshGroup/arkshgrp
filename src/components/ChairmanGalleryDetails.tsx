@@ -1,33 +1,107 @@
-"use client";
+'use client'
 
-import React, { useState } from "react";
-import { HomeIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
-import PageBanner from "@/components/PageBanner";
-import LightboxLazy from "@/components/LightboxLazy";
-import { chairmanGalleryData } from "@/constant/chairman.gallery.data";
-import { useParams, notFound } from "next/navigation";
+import React, { useEffect, useMemo, useState } from 'react'
+import { HomeIcon } from '@heroicons/react/24/solid'
+import Image from 'next/image'
+import PageBanner from '@/components/PageBanner'
+import LightboxLazy from '@/components/LightboxLazy'
+import { useParams, notFound } from 'next/navigation'
+import Spinner from '@/components/Spinner'
+
+const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
+
+type CategoryRef = { id: string; name?: string; slug?: string } | string
+
+interface GalleryImage {
+  image: { url?: string } | string
+  id?: string
+}
+
+interface GalleryItem {
+  id: string
+  title: string
+  category: CategoryRef
+  year?: string | null
+  images: GalleryImage[]
+}
+
+function getCategorySlug(cat: CategoryRef): string {
+  if (typeof cat === 'string') return cat
+  return (cat as { slug?: string }).slug ?? (cat as { name?: string }).name ?? ''
+}
+
+function getImageUrl(img: GalleryImage): string | null {
+  const media = img.image
+  if (!media) return null
+  return typeof media === 'object' && (media as { url?: string }).url
+    ? (media as { url: string }).url
+    : null
+}
 
 export default function ChairmanGalleryDetails() {
-  const [index, setIndex] = useState(-1);
-  const params = useParams();
+  const [items, setItems] = useState<GalleryItem[]>([])
+  const [loading, setLoading] = useState(true)
+  const [index, setIndex] = useState(-1)
 
-  const slides = chairmanGalleryData.map((item) => ({
-    src: item.image,
-    alt: item.title,
-    // Add download url if it's different, otherwise it uses src
-    download: `${item.image}?download`,
-  }));
-  const currentPost = chairmanGalleryData.find((post) => {
-    const generatedSlug = encodeURIComponent(
-      post.title.toLowerCase().replace(/\s+/g, "-"),
-    );
-    // Ensure this matches your folder name (e.g., if folder is [title], use params.title)
-    return generatedSlug === params.title || generatedSlug === params.id;
-  });
+  const params = useParams()
+  const slug =
+    typeof params?.title === 'string'
+      ? params.title
+      : typeof params?.id === 'string'
+        ? params.id
+        : ''
+
+  useEffect(() => {
+    const fetchGallery = async () => {
+      try {
+        const res = await fetch(`${PAYLOAD_BASE_URL}/api/md-gallery?depth=2&limit=500`)
+        const data = await res.json()
+        const docs = Array.isArray(data.docs) ? data.docs : []
+
+        const filtered = docs.filter((item: GalleryItem) => {
+          const generatedSlug = encodeURIComponent(item.title.toLowerCase().replace(/\s+/g, '-'))
+          return generatedSlug === slug
+        })
+
+        setItems(filtered)
+      } catch (error) {
+        console.error('Chairman gallery details fetch error:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    if (slug) fetchGallery()
+  }, [slug])
+
+  const slides = useMemo(
+    () =>
+      items.flatMap((item) =>
+        (item.images ?? [])
+          .map((img) => getImageUrl(img))
+          .filter((url): url is string => Boolean(url))
+          .map((url) => ({
+            src: `${PAYLOAD_BASE_URL}${url}`,
+            alt: item.title,
+            download: `${PAYLOAD_BASE_URL}${url}?download`,
+          })),
+      ),
+    [items],
+  )
+
+  const currentPost = items.length > 0 ? items[0] : null
+
+  if (loading) {
+    return (
+      <main className="min-h-screen flex items-center justify-center bg-white">
+        <Spinner color="#3498db" />
+      </main>
+    )
+  }
+
   if (!currentPost) {
-    notFound();
-    return null; // This line is technically unreachable but good for TS
+    notFound()
+    return null
   }
 
   return (
@@ -38,10 +112,10 @@ export default function ChairmanGalleryDetails() {
         width="w-full mx-auto"
         textAlign="center"
         breadcrumb={[
-          { name: "Home", href: "/", icon: <HomeIcon className="w-4 h-4" /> },
+          { name: 'Home', href: '/', icon: <HomeIcon className="w-4 h-4" /> },
           {
-            name: "Gallery",
-            href: "/gallery",
+            name: 'Gallery',
+            href: '/gallery',
             icon: <HomeIcon className="w-4 h-4" />,
           },
           { name: currentPost.title },
@@ -51,16 +125,16 @@ export default function ChairmanGalleryDetails() {
       <section className="py-10 sm:py-12 md:py-15 bg-white">
         <div className="w-full max-w-8xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
-            {chairmanGalleryData.map((item, i) => (
+            {slides.map((slide, i) => (
               <div
-                key={item.id}
+                key={i}
                 onClick={() => setIndex(i)}
-                className="group relative h-56 sm:h-72 md:h-80 lg:h-88 overflow-hidden rounded sm:rounded md:rounded bg-gray-100 shadow-md transition-all duration-500 hover:shadow-2xl cursor-pointer"
+                className="group relative h-56 sm:h-72 md:h-80 lg:h-88 overflow-hidden rounded bg-gray-100 shadow-md transition-all duration-500 hover:shadow-2xl cursor-pointer"
               >
                 <div className="relative w-full h-full overflow-hidden">
                   <Image
-                    src={item.image}
-                    alt={item.title}
+                    src={slide.src}
+                    alt={slide.alt}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"
                     sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
@@ -82,5 +156,5 @@ export default function ChairmanGalleryDetails() {
         slideshow={{ autoplay: false, delay: 3000 }}
       />
     </main>
-  );
+  )
 }
