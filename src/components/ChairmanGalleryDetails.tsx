@@ -12,6 +12,11 @@ const PAYLOAD_BASE_URL = process.env.NEXT_PUBLIC_PAYLOAD_URL ?? ''
 
 type CategoryRef = { id: string; name?: string; slug?: string } | string
 
+function getCategorySlug(cat: CategoryRef): string {
+  if (typeof cat === 'string') return cat
+  return (cat as { slug?: string }).slug ?? (cat as { name?: string }).name ?? ''
+}
+
 interface GalleryImage {
   image: { url?: string } | string
   id?: string
@@ -23,11 +28,6 @@ interface GalleryItem {
   category: CategoryRef
   year?: string | null
   images: GalleryImage[]
-}
-
-function getCategorySlug(cat: CategoryRef): string {
-  if (typeof cat === 'string') return cat
-  return (cat as { slug?: string }).slug ?? (cat as { name?: string }).name ?? ''
 }
 
 function getImageUrl(img: GalleryImage): string | null {
@@ -58,12 +58,12 @@ export default function ChairmanGalleryDetails() {
         const data = await res.json()
         const docs = Array.isArray(data.docs) ? data.docs : []
 
-        const filtered = docs.filter((item: GalleryItem) => {
-          const generatedSlug = encodeURIComponent(item.title.toLowerCase().replace(/\s+/g, '-'))
-          return generatedSlug === slug
-        })
+        const filteredByCategory = docs.filter(
+          (item: GalleryItem) =>
+            getCategorySlug(item.category).toLowerCase() === decodeURIComponent(slug).toLowerCase(),
+        )
 
-        setItems(filtered)
+        setItems(filteredByCategory)
       } catch (error) {
         console.error('Chairman gallery details fetch error:', error)
       } finally {
@@ -114,8 +114,8 @@ export default function ChairmanGalleryDetails() {
         breadcrumb={[
           { name: 'Home', href: '/', icon: <HomeIcon className="w-4 h-4" /> },
           {
-            name: 'Gallery',
-            href: '/gallery',
+            name: 'Chairman Gallery',
+            href: '/md-gallery',
             icon: <HomeIcon className="w-4 h-4" />,
           },
           { name: currentPost.title },
