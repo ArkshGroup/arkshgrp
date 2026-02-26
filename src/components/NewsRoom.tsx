@@ -124,7 +124,7 @@ export default function NewsRoom() {
     <main className="bg-[#E6F2FF] font-sans min-h-screen">
       {/* HEADER */}
       <section
-        className="relative py-10 sm:py-14 md:py-20 text-center text-white"
+        className="relative py-10 sm:py-14 md:py-21 text-center text-white"
         style={{
           backgroundImage: "url('https://arkshgroup.com/banner4.png')",
           backgroundSize: 'cover',
@@ -176,7 +176,7 @@ export default function NewsRoom() {
                       rel="noopener noreferrer"
                       className="group block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
                     >
-                      <div className="relative w-full min-h-80 aspect-4/3 overflow-hidden bg-gray-900 sm:min-h-96 md:min-h-100">
+                      <div className="relative w-full min-h-80 aspect-4/3 overflow-hidden bg-gray-900 sm:min-h-96 md:min-h-50">
                         {thumbnailUrl && (
                           <Image
                             src={thumbnailUrl}
@@ -244,7 +244,7 @@ export default function NewsRoom() {
                       rel="noopener noreferrer"
                       className="group block rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
                     >
-                      <div className="relative w-full min-h-80 aspect-4/3 overflow-hidden bg-gray-900 sm:min-h-96 md:min-h-100">
+                      <div className="relative w-full min-h-80 aspect-4/3 overflow-hidden bg-gray-900 sm:min-h-96 md:min-h-50">
                         {thumbnailUrl && (
                           <Image
                             src={thumbnailUrl}
@@ -255,8 +255,8 @@ export default function NewsRoom() {
                           />
                         )}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <span className="flex h-16 w-16 items-center justify-center rounded-full bg-[#1D8AD2] text-white shadow-xl ring-4 ring-white/30 transition-transform duration-300 group-hover:scale-110">
-                            <PlayIcon className="h-7 w-7 ml-0.5" />
+                          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-[#1D8AD2] text-white shadow-xl ring-4 ring-white/30 transition-transform duration-300 group-hover:scale-110">
+                            <PlayIcon className="h-5 w-5 ml-0.5" />
                           </span>
                         </div>
                       </div>

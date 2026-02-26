@@ -1,9 +1,9 @@
-"use client";
-import Link from "next/link";
-import { MapPinIcon, PhoneIcon, EnvelopeIcon } from "@heroicons/react/24/solid";
+'use client'
+import Link from 'next/link'
+import { MapPinIcon, PhoneIcon, EnvelopeIcon } from '@heroicons/react/24/solid'
 
 export default function Footer() {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getFullYear()
 
   return (
     <footer className="bg-[#1e4ca1] text-white pt-16 pb-6 font-sans">
@@ -12,8 +12,8 @@ export default function Footer() {
         <div>
           <h3 className="text-xl font-bold mb-4">About us</h3>
           <p className="text-sm leading-relaxed mb-6 opacity-90">
-            Arksh is an International Trading, Manufacturing, Hospitality &
-            Services Group established in 1978 AD.
+            Arksh is an International Trading, Manufacturing, Hospitality & Services Group
+            established in 1978 AD.
           </p>
 
           <h3 className="text-xl font-bold mb-6 border-b-2 border-white/20 pb-2 inline-block">
@@ -36,9 +36,7 @@ export default function Footer() {
               <div className="bg-white/20 p-2 rounded-full">
                 <PhoneIcon className="w-4 h-4 text-white" />
               </div>
-              <span className="text-sm">
-                +977-1-4002049 / +977 980-2074449 / +977 9802074449
-              </span>
+              <span className="text-sm">+977-1-4002049 / +977 980-2074449 / +977 9802074449</span>
             </div>
 
             <div className="flex items-center gap-4">
@@ -57,19 +55,19 @@ export default function Footer() {
           </h3>
           <ul className="space-y-3">
             {[
-              { name: "Home", path: "/" },
-              { name: "About Us", path: "/about" },
-              { name: "Arkshism", path: "/arkshism" },
-              { name: "News", path: "/news" },
-              { name: "Gallery", path: "/gallery" },
-              { name: "Careers", path: "/career" },
-              { name: "Contact", path: "/contact" },
+              { name: 'Home', path: '/' },
+              { name: 'About Us', path: '/about' },
+              { name: 'Arkshism', path: '/arkshism' },
+              { name: 'News', path: '/news' },
+              { name: 'Gallery', path: '/gallery' },
+              { name: 'Careers', path: '/career' },
+              { name: 'Contact', path: '/contact' },
             ].map((link) => (
               <li key={link.name} className="flex items-center gap-2 group">
                 <span className="w-1.5 h-1.5 bg-white rounded-full opacity-60"></span>
                 <Link
                   href={link.path}
-                  className="text-sm hover:translate-x-1 transition-transform duration-200"
+                  className="text-[16px] hover:translate-x-1 transition-transform duration-200"
                 >
                   {link.name}
                 </Link>
@@ -90,7 +88,7 @@ export default function Footer() {
                 src="https://www.facebook.com/plugins/page.php?href=https%3A%2F%2Fwww.facebook.com%2FArksh.Group%2F&tabs=timeline&width=340&height=300&small_header=true&adapt_container_width=true&hide_cover=false&show_facepile=true&appId"
                 width="100%"
                 height="100%"
-                style={{ border: "none", overflow: "hidden" }}
+                style={{ border: 'none', overflow: 'hidden' }}
                 scrolling="no"
                 frameBorder="0"
                 allowFullScreen={true}
@@ -137,5 +135,5 @@ export default function Footer() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

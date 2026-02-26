@@ -69,18 +69,12 @@ export default function CareerSection() {
         const uploadForm = new FormData()
         uploadForm.append('file', resumeFile)
         // Optional alt text for the media
-        uploadForm.append(
-          'alt',
-          `${(data.fullName as string) || 'CV'} - ${selectedPosition}`,
-        )
+        uploadForm.append('alt', `${(data.fullName as string) || 'CV'} - ${selectedPosition}`)
 
-        const uploadRes = await fetch(
-          `${PAYLOAD_BASE_URL}/api/media`,
-          {
-            method: 'POST',
-            body: uploadForm,
-          },
-        )
+        const uploadRes = await fetch(`${PAYLOAD_BASE_URL}/api/media`, {
+          method: 'POST',
+          body: uploadForm,
+        })
 
         if (!uploadRes.ok) {
           throw new Error(`Failed to upload CV (${uploadRes.status})`)
@@ -90,30 +84,27 @@ export default function CareerSection() {
         cvMediaId = uploadJson?.doc?.id || uploadJson?.id
       }
 
-    const payload = {
-      name: (data.fullName as string) ?? '',
-      email: (data.email as string) ?? '',
-      phone: (data.phoneNumber as string) ?? '',
-      location: (data.location as string) ?? '',
-      position: selectedPosition,
-      expectedSalary: data.expectedSalary ? Number(data.expectedSalary as string) : undefined,
-      startDate: (data.startDate as string) || undefined,
-      experience: (data.experience as string) ?? '',
-      employmentStatus,
-      hasReferrer,
-      referrerName: (data.referrerName as string) || undefined,
-      referrerEmail: (data.referrerEmail as string) || undefined,
-      cv: cvMediaId,
-    }
+      const payload = {
+        name: (data.fullName as string) ?? '',
+        email: (data.email as string) ?? '',
+        phone: (data.phoneNumber as string) ?? '',
+        location: (data.location as string) ?? '',
+        position: selectedPosition,
+        expectedSalary: data.expectedSalary ? Number(data.expectedSalary as string) : undefined,
+        startDate: (data.startDate as string) || undefined,
+        experience: (data.experience as string) ?? '',
+        employmentStatus,
+        hasReferrer,
+        referrerName: (data.referrerName as string) || undefined,
+        referrerEmail: (data.referrerEmail as string) || undefined,
+        cv: cvMediaId,
+      }
 
-      const res = await fetch(
-        `${PAYLOAD_BASE_URL}/api/applications`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        },
-      )
+      const res = await fetch(`${PAYLOAD_BASE_URL}/api/applications`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
 
       if (!res.ok) {
         throw new Error(`Failed to submit application (${res.status})`)
@@ -164,7 +155,7 @@ export default function CareerSection() {
       <Toaster position="top-center" reverseOrder={false} />
       {/* 1. Header/Banner */}
       <div
-        className="relative h-60 flex items-center justify-center text-white bg-cover bg-center"
+        className="relative h-65 flex items-center justify-center text-white bg-cover bg-center"
         style={{
           backgroundImage:
             "url('https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&q=80&w=2070')",
@@ -207,15 +198,15 @@ export default function CareerSection() {
               </div>
               <div className="flex flex-wrap gap-4 text-xs text-gray-500 font-medium">
                 <span className="flex items-center gap-1.5">
-                  <MapPinIcon className="w-4 h-4 text-blue-600" /> {job.location || 'Location not specified'}
+                  <MapPinIcon className="w-4 h-4 text-blue-600" />{' '}
+                  {job.location || 'Location not specified'}
                 </span>
                 <span className="flex items-center gap-1.5">
                   <ClockIcon className="w-4 h-4 text-blue-600" /> {job.type || 'N/A'}
                 </span>
                 {job.deadline && (
                   <span className="flex items-center gap-1.5">
-                    <ClockIcon className="w-4 h-4 text-blue-600" />{' '}
-                    Deadline:{' '}
+                    <ClockIcon className="w-4 h-4 text-blue-600" /> Deadline:{' '}
                     {new Date(job.deadline).toLocaleDateString()}
                   </span>
                 )}
@@ -544,7 +535,9 @@ export default function CareerSection() {
                     type="button"
                     className="text-red-500 text-xs font-semibold"
                     onClick={() => {
-                      const input = document.getElementById('resume-upload') as HTMLInputElement | null
+                      const input = document.getElementById(
+                        'resume-upload',
+                      ) as HTMLInputElement | null
                       if (input) input.value = ''
                       setResumePreview(null)
                     }}

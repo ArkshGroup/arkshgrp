@@ -111,7 +111,7 @@ export default function ChairmanGallery() {
                 return (
                   <div
                     key={slug}
-                    className="group relative h-56 sm:h-72 md:h-80 lg:h-88 overflow-hidden rounded-lg sm:rounded-2xl md:rounded-[30px] bg-gray-100 shadow-md transition-all duration-500 hover:shadow-2xl"
+                    className="group relative h-56 sm:h-72 md:h-80 lg:h-88 overflow-hidden rounded-lg sm:rounded-2xl md:rounded-[10px] bg-gray-100 shadow-md transition-all duration-500 hover:shadow-2xl"
                   >
                     <Link
                       href={`/md-gallery/${encodeURIComponent(slug)}`}
@@ -127,11 +127,25 @@ export default function ChairmanGallery() {
                         />
                       </div>
 
-                      <div className="absolute inset-0 bg-linear-to-t from-[#2c3e50]/90 via-transparent to-transparent opacity-100 sm:opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-4 sm:p-6 md:p-10">
-                        <p className="text-white bg-[#3498db] inline-block px-2 sm:px-2.5 py-0.5 sm:p-1 rounded text-xs font-bold uppercase tracking-[0.2em] mb-1.5 sm:mb-2 w-fit">
-                          {name}
-                        </p>
-                        <p className="text-white/90 text-sm">View all photos</p>
+                      <div
+                        className="absolute inset-0 bg-linear-to-t from-[#1D8AD2]/65 via-[#1f2a37]/40 to-transparent 
+                opacity-100 sm:opacity-0 group-hover:opacity-100 
+                transition-all duration-500 ease-out 
+                flex flex-col justify-end 
+                p-4 sm:p-6 md:p-8 lg:p-10"
+                      >
+                        <div
+                          className=" bg-[#1D8AD2]/55 rounded-lg px-3 py-2 sm:px-4 sm:py-2.5 
+                  transform translate-y-4 sm:translate-y-6 group-hover:translate-y-0 
+                  transition-transform duration-500 ease-out w-fit"
+                        >
+                          <p
+                            className="text-white text-xs sm:text-sm font-semibold uppercase 
+                  tracking-[0.18em] sm:tracking-[0.22em]"
+                          >
+                            {name}
+                          </p>
+                        </div>
                       </div>
                     </Link>
                   </div>
