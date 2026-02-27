@@ -22,9 +22,7 @@ function getExcerptText(excerpt: unknown): string {
   const root = (excerpt as { root?: { children?: { children?: { text?: string }[] }[] } }).root
   if (!root?.children) return ''
   return root.children
-    .map((node) =>
-      (node.children || []).map((c) => (c && 'text' in c ? c.text : '')).join(''),
-    )
+    .map((node) => (node.children || []).map((c) => (c && 'text' in c ? c.text : '')).join(''))
     .join(' ')
 }
 
@@ -73,22 +71,16 @@ export default function BlogSection() {
     () => posts.slice(indexOfFirstPost, indexOfLastPost),
     [posts, indexOfFirstPost, indexOfLastPost],
   )
-  const totalPages = useMemo(
-    () => Math.ceil(posts.length / POSTS_PER_PAGE),
-    [posts.length],
-  )
+  const totalPages = useMemo(() => Math.ceil(posts.length / POSTS_PER_PAGE), [posts.length])
   const pageNumbers = useMemo(
     () => Array.from({ length: totalPages }, (_, i) => i + 1),
     [totalPages],
   )
 
-  const paginate = useCallback(
-    (pageNumber: number) => {
-      setCurrentPage(pageNumber)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
-    },
-    [],
-  )
+  const paginate = useCallback((pageNumber: number) => {
+    setCurrentPage(pageNumber)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }, [])
 
   /* ===================== */
   /* FULL PAGE LOADER     */
@@ -119,7 +111,7 @@ export default function BlogSection() {
         ]}
       />
 
-      <section className="w-full max-w-7xl mx-auto px-3 sm:px-4 md:px-6 py-8 sm:py-9 md:py-10">
+      <section className="w-full max-w-8xl mx-auto px-3 sm:px-4 md:px-6 py-8 sm:py-9 md:py-10">
         {posts.length === 0 ? (
           <p className="text-center text-gray-400 py-20">No blog posts found.</p>
         ) : (

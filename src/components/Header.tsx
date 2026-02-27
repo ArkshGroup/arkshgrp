@@ -35,6 +35,8 @@ export default function Header() {
 
   useEffect(() => {
     const handleScroll = () => {
+      if (isOpen) return // ✅ ADD THIS LINE
+
       const currentScroll = window.scrollY
 
       if (currentScroll > lastScroll && currentScroll > 50) {
@@ -49,7 +51,7 @@ export default function Header() {
 
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [lastScroll])
+  }, [lastScroll, isOpen]) // ✅ ADD isOpen here
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : 'auto'
@@ -70,7 +72,7 @@ export default function Header() {
   return (
     <header
       className={`w-full font-sans sticky top-0 z-50 transition-transform duration-500 ${
-        scrollDir === 'down' ? '-translate-y-full' : 'translate-y-0'
+        isOpen ? 'translate-y-0' : scrollDir === 'down' ? '-translate-y-full' : 'translate-y-0'
       }`}
     >
       {/* TOP BAR */}
@@ -86,19 +88,50 @@ export default function Header() {
           </a>
         </div>
 
+        {/* SOCIAL DROPDOWN */}
         <div className="flex gap-3">
           {socialLinks.map((social, i) => {
             const Icon: IconType = social.icon
+            const hasBrands = social.brands && social.brands.length > 0
+
             return (
-              <div key={i}>
+              <div key={i} className="relative group">
                 <a
                   href={social.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-white/20 hover:bg-white hover:text-[#209AEA] p-1 rounded-full w-8 h-8 flex items-center justify-center"
+                  className="bg-white/20 hover:bg-white hover:text-[#209AEA] p-1 rounded-full w-8 h-8 flex items-center justify-center transition"
                 >
                   <Icon className="w-5 h-4" />
                 </a>
+
+                {hasBrands && (
+                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                    <div className="bg-white rounded-xl shadow-2xl p-4 w-72 border border-gray-100 relative">
+                      <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white rotate-45 border-t border-l border-gray-100"></div>
+                      <div className="grid grid-cols-3 gap-3">
+                        {social.brands?.map((brand, index) => (
+                          <a
+                            key={index}
+                            href={brand.href}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex flex-col items-center justify-center p-1.5 rounded-lg border border-gray-50 hover:border-blue-300 hover:shadow-sm transition bg-white"
+                          >
+                            <div className="relative w-16 h-16">
+                              <Image
+                                src={brand.logo}
+                                alt={brand.name}
+                                fill
+                                className="object-contain"
+                              />
+                            </div>
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             )
           })}
@@ -107,15 +140,12 @@ export default function Header() {
 
       {/* NAVBAR */}
       <nav
-        className={`max-w-8xl mx-auto px-6 md:px-12 py-3 flex justify-between items-center ${
-          isScrolled ? 'bg-white/70 backdrop-blur-xl shadow-md' : 'bg-white'
-        }`}
+        className={`max-w-8xl mx-auto px-6 md:px-12 py-3 flex justify-between items-center ${isScrolled ? 'bg-white/70 backdrop-blur-xl shadow-md' : 'bg-white'}`}
       >
         <Link href="/" className="relative h-20 w-20 block">
           <Image src={logo} alt="Arksh Group Logo" fill className="object-contain" priority />
         </Link>
 
-        {/* DESKTOP MENU WITH DROPDOWNS RESTORED */}
         <div className="hidden lg:flex items-center gap-7">
           {menuItems.map((item) => {
             const isInvolvement = item.label === 'Involvements'
@@ -133,7 +163,12 @@ export default function Header() {
               >
                 {hasDropdown ? (
                   <>
-                    <button className="font-semibold text-[16px] text-[#005ABA] flex items-center gap-1">
+                    <button
+                      className="relative font-semibold text-[16px] text-[#005ABA] flex items-center gap-1 
+after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 
+after:bg-[#005ABA] after:transition-all after:duration-300 
+hover:after:w-full"
+                    >
                       {item.label}
                       <ChevronDownIcon className="w-3 h-3" />
                     </button>
@@ -150,7 +185,7 @@ export default function Header() {
                           return (
                             <li
                               key={sub.name}
-                              className="relative px-5 py-2.5 hover:bg-gray-50 flex justify-between items-center"
+                              className="relative px-5 py-2.5 hover:bg-blue- flex justify-between items-center"
                               onMouseEnter={() => hasChildren && setActiveNestedMenu(sub.name)}
                             >
                               {sub.href ? (
@@ -177,10 +212,8 @@ export default function Header() {
                                       >
                                         <a
                                           href={nested.href}
-                                          target={
-                                            nested.href.startsWith('http') ? '_blank' : '_self'
-                                          }
-                                          rel="noopener noreferrer"
+                                          target={isInvolvement ? '_blank' : undefined}
+                                          rel={isInvolvement ? 'noopener noreferrer' : undefined}
                                         >
                                           {nested.name}
                                         </a>
@@ -196,7 +229,14 @@ export default function Header() {
                     </div>
                   </>
                 ) : (
-                  <Link href={item.href} className="font-semibold text-[16px] text-[#005ABA]">
+                  // menuItems
+                  <Link
+                    href={item.href}
+                    className="relative font-semibold text-[16px] text-[#005ABA] 
+  after:absolute after:-bottom-1 after:left-0 after:h-0.5 after:w-0 
+  after:bg-[#005ABA] after:transition-all after:duration-300 
+  hover:after:w-full"
+                  >
                     {item.label}
                   </Link>
                 )}
@@ -205,7 +245,6 @@ export default function Header() {
           })}
         </div>
 
-        {/* MOBILE TOGGLE */}
         <button className="lg:hidden p-2 text-[#005ABA]" onClick={() => setIsOpen(!isOpen)}>
           <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
@@ -218,7 +257,7 @@ export default function Header() {
         </button>
       </nav>
 
-      {/* MOBILE MENU (unchanged logic, still auto-closes) */}
+      {/* MOBILE DROPDOWNS */}
       {isOpen && (
         <div className="lg:hidden bg-white shadow-lg border-t px-6 py-4 space-y-3">
           {menuItems.map((item) => {
@@ -276,6 +315,8 @@ export default function Header() {
                                         <a
                                           key={nested.name}
                                           href={nested.href}
+                                          target={isInvolvement ? '_blank' : undefined}
+                                          rel={isInvolvement ? 'noopener noreferrer' : undefined}
                                           onClick={() => setIsOpen(false)}
                                           className="block py-1 text-[13px] text-[#0057B7]"
                                         >

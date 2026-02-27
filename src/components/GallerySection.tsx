@@ -122,7 +122,7 @@ export default function GallerySection() {
                           src={`${PAYLOAD_BASE_URL}${url}`}
                           alt={name}
                           fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
+                          className="object-contain transition-transform duration-700 group-hover:scale-110"
                           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                         />
                       </div>
