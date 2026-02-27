@@ -74,7 +74,6 @@ export default function Header() {
       }`}
     >
       {/* TOP BAR */}
-      {/* TOP BAR */}
       <div className="hidden md:flex bg-[#2257A6] text-white py-3.5 px-4 md:px-12 flex-col md:flex-row justify-around items-center gap-4">
         <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center text-[13px] font-medium">
           <a href="mailto:info@arkshgroup.com" className="flex items-center gap-2">
@@ -90,10 +89,8 @@ export default function Header() {
         <div className="flex gap-3">
           {socialLinks.map((social, i) => {
             const Icon: IconType = social.icon
-            const hasBrands = social.brands && social.brands.length > 0
-
             return (
-              <div key={i} className="relative group/social">
+              <div key={i}>
                 <a
                   href={social.href}
                   target="_blank"
@@ -102,32 +99,6 @@ export default function Header() {
                 >
                   <Icon className="w-5 h-4" />
                 </a>
-
-                {hasBrands && (
-                  <div className="absolute top-full left-1/2 -translate-x-1/2 pt-3 opacity-0 invisible group-hover/social:opacity-100 group-hover/social:visible transition-all duration-300 z-50">
-                    <div className="bg-white rounded-xl shadow-2xl p-4 w-72 border border-gray-100">
-                      <div className="grid grid-cols-3 gap-3">
-                        {social.brands?.map((brand, index) => (
-                          <a
-                            key={index}
-                            href={brand.href}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            <div className="relative w-16 h-16">
-                              <Image
-                                src={brand.logo}
-                                alt={brand.name}
-                                fill
-                                className="object-contain"
-                              />
-                            </div>
-                          </a>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                )}
               </div>
             )
           })}
@@ -136,17 +107,18 @@ export default function Header() {
 
       {/* NAVBAR */}
       <nav
-        className={`max-w-8xl mx-auto px-6 md:px-12 py-3 flex justify-between items-center ${isScrolled ? 'bg-white/70 backdrop-blur-xl shadow-md' : 'bg-white'}`}
+        className={`max-w-8xl mx-auto px-6 md:px-12 py-3 flex justify-between items-center ${
+          isScrolled ? 'bg-white/70 backdrop-blur-xl shadow-md' : 'bg-white'
+        }`}
       >
         <Link href="/" className="relative h-20 w-20 block">
           <Image src={logo} alt="Arksh Group Logo" fill className="object-contain" priority />
         </Link>
 
-        {/* DESKTOP MENU */}
+        {/* DESKTOP MENU WITH DROPDOWNS RESTORED */}
         <div className="hidden lg:flex items-center gap-7">
           {menuItems.map((item) => {
             const isInvolvement = item.label === 'Involvements'
-
             const dropdownItems: UnifiedDropdownItem[] = isInvolvement
               ? involvements
               : item.subMenu || []
@@ -246,12 +218,11 @@ export default function Header() {
         </button>
       </nav>
 
-      {/* MOBILE MENU */}
+      {/* MOBILE MENU (unchanged logic, still auto-closes) */}
       {isOpen && (
         <div className="lg:hidden bg-white shadow-lg border-t px-6 py-4 space-y-3">
           {menuItems.map((item) => {
             const isInvolvement = item.label === 'Involvements'
-
             const dropdownItems: UnifiedDropdownItem[] = isInvolvement
               ? involvements
               : item.subMenu || []
@@ -305,10 +276,7 @@ export default function Header() {
                                         <a
                                           key={nested.name}
                                           href={nested.href}
-                                          target={
-                                            nested.href.startsWith('http') ? '_blank' : '_self'
-                                          }
-                                          rel="noopener noreferrer"
+                                          onClick={() => setIsOpen(false)}
                                           className="block py-1 text-[13px] text-[#0057B7]"
                                         >
                                           {nested.name}
@@ -320,6 +288,7 @@ export default function Header() {
                               ) : (
                                 <Link
                                   href={sub.href || '#'}
+                                  onClick={() => setIsOpen(false)}
                                   className="block py-1 text-[14px] text-[#3E80C9]"
                                 >
                                   {sub.name}
@@ -332,7 +301,11 @@ export default function Header() {
                     )}
                   </>
                 ) : (
-                  <Link href={item.href} className="block py-2 font-semibold text-[#005ABA]">
+                  <Link
+                    href={item.href}
+                    onClick={() => setIsOpen(false)}
+                    className="block py-2 font-semibold text-[#005ABA]"
+                  >
                     {item.label}
                   </Link>
                 )}

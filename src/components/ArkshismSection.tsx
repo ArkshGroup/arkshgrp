@@ -22,7 +22,7 @@ export default function ArkshismSection() {
       <PageBanner
         title="Arkshism"
         padding="py-12 px-6"
-        width="w-425 mx-auto"
+        width="w-full mx-auto"
         textAlign="center"
         breadcrumb={[{ name: 'Home', href: '/', icon: <HomeIcon /> }, { name: 'Arkshism' }]}
       />

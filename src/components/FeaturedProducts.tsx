@@ -79,7 +79,7 @@ export default function FeaturedProducts() {
           {/* Prev Button */}
           <button
             onClick={handlePrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 bg-white shadow-lg rounded-full text-[#3498db] hover:bg-[#3498db] hover:text-white transition-all duration-300 border border-gray-100 hidden md:block"
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-white shadow-lg rounded-full text-[#3498db] hover:bg-[#3498db] hover:text-white transition-all duration-300 border border-gray-100 hidden md:block text-4xl"
           >
             ‹
           </button>
@@ -119,7 +119,7 @@ export default function FeaturedProducts() {
           {/* Next Button */}
           <button
             onClick={handleNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-2 bg-white shadow-lg rounded-full text-[#3498db] hover:bg-[#3498db] hover:text-white transition-all duration-300 border border-gray-100 hidden md:block"
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-20 p-3 bg-white shadow-lg rounded-full text-[#3498db] hover:bg-[#3498db] hover:text-white transition-all duration-300 border border-gray-100 hidden md:block text-4xl"
           >
             ›
           </button>
